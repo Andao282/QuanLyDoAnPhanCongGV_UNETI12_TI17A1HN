@@ -31,6 +31,26 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/DangKyDeTai/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5RGVUYWlcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/DangKyDeTai/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5RGVUYWlcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/DangKyDeTai/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5RGVUYWlcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/DangKyDeTai/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5RGVUYWlcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/DangKyDeTai/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5RGVUYWlcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [G:/.Net/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

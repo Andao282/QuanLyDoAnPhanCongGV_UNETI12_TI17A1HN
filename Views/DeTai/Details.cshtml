@@ -1,0 +1,332 @@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.ViewModels.DeTaiDetailViewModel
+@{
+    ViewData["Title"] = "Chi tiết Đề tài - " + Model.DeTai.TenDeTai;
+    var sinhViens = ViewBag.SinhViens as List<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.SinhVien> ?? new();
+}
+
+<div class="container py-4">
+    <!-- Nút quay lại & Tiêu đề -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách đề tài
+        </a>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="badge bg-light text-dark border px-3 py-2">
+                Mã đề tài: <strong>#@Model.DeTai.MaDeTai</strong>
+            </span>
+            <a asp-action="Edit" asp-route-id="@Model.DeTai.MaDeTai" class="btn btn-outline-warning btn-sm">
+                <i class="bi bi-pencil-square me-1"></i>Sửa đề tài
+            </a>
+        </div>
+    </div>
+
+    <!-- Thông báo phản hồi hệ thống -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 px-3 small shadow-sm mb-3" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 px-3 small shadow-sm mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show py-2 px-3 small shadow-sm mb-3" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-1"></i>@TempData["WarningMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Cảnh báo nếu có lỗi nghiệp vụ (Mục 6.7: SoChoCon < 0) -->
+    @if (Model.IsLoiNghiepVu)
+    {
+        <div class="alert alert-danger border-danger shadow-sm d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-octagon-fill fs-2 me-3"></i>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">CẢNH BÁO LỖI NGHIỆP VỤ DUYỆT ĐĂNG KÝ (MỤC 6.7)!</h5>
+                <p class="mb-0">
+                    Số sinh viên đã duyệt hợp lệ (<strong>@Model.SoSinhVienDangKyHopLe</strong> SV) đã vượt quá số sinh viên tối đa cho phép (<strong>@Model.DeTai.SoSinhVienToiDa</strong> SV).
+                    Số chỗ còn hiện tại là <strong>@Model.SoChoCon</strong> (&lt; 0). Nhóm quản trị phải kiểm tra lại quá trình duyệt!
+                </p>
+            </div>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Cột thông tin đề tài -->
+        <div class="col-lg-7 col-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="bi bi-info-circle-fill me-2"></i>Thông Tin Chi Tiết Đề Tài
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="fw-bold text-dark mb-3">@Model.DeTai.TenDeTai</h4>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th class="text-muted" style="width: 140px;">Lĩnh vực:</th>
+                                    <td><span class="badge bg-info text-dark">@(Model.DeTai.LinhVuc?.TenLinhVuc ?? "Chưa phân loại")</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Năm học - Học kỳ:</th>
+                                    <td>Năm <strong>@Model.DeTai.NamHoc</strong> - Học kỳ <strong>@Model.DeTai.HocKy</strong></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Trạng thái:</th>
+                                    <td>
+                                        @if (Model.DeTai.TrangThai == "MoDangKy")
+                                        {
+                                            <span class="badge bg-success">Mở đăng ký</span>
+                                        }
+                                        else if (Model.DeTai.TrangThai == "DuSoLuong")
+                                        {
+                                            <span class="badge bg-info">Đủ số lượng</span>
+                                        }
+                                        else if (Model.DeTai.TrangThai == "TamKhoa")
+                                        {
+                                            <span class="badge bg-warning text-dark">Tạm khóa</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@Model.DeTai.TrangThai</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold text-secondary border-bottom pb-1">Mô tả đề tài:</h6>
+                        <p class="text-dark bg-light p-3 rounded small">
+                            @(string.IsNullOrWhiteSpace(Model.DeTai.MoTa) ? "Chưa có mô tả chi tiết." : Model.DeTai.MoTa)
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold text-secondary border-bottom pb-1">Yêu cầu đối với sinh viên:</h6>
+                        <p class="text-dark bg-light p-3 rounded small">
+                            @(string.IsNullOrWhiteSpace(Model.DeTai.YeuCau) ? "Không có yêu cầu đặc biệt." : Model.DeTai.YeuCau)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột sức chứa & Kiểm toán số chỗ còn (Mục 6.7) -->
+        <div class="col-lg-5 col-12">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="bi bi-calculator-fill me-2"></i>Kiểm Toán Sức Chứa (Mục 6.7)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="p-3 bg-light rounded mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Sĩ số tối đa (SoSinhVienToiDa):</span>
+                            <strong class="fs-5 text-dark">@Model.DeTai.SoSinhVienToiDa</strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Đã duyệt hợp lệ:</span>
+                            <strong class="fs-5 text-primary">@Model.SoSinhVienDangKyHopLe</strong>
+                        </div>
+                        <hr class="my-2" />
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Số chỗ còn (SoChoCon):</span>
+                            @if (Model.IsLoiNghiepVu)
+                            {
+                                <span class="badge bg-danger fs-6">@Model.SoChoCon (Lỗi &lt; 0)</span>
+                            }
+                            else if (Model.IsHetCho)
+                            {
+                                <span class="badge bg-secondary fs-6">0 (Hết chỗ)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success fs-6">Còn @Model.SoChoCon chỗ</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info py-2 px-3 small mb-3">
+                        <strong>Quy ước tính sức chứa (Mục 6.7):</strong>
+                        <ul class="mb-0 ps-3 mt-1">
+                            <li><code>SoChoCon = SoSinhVienToiDa - SoSinhVienDangKyHopLe</code></li>
+                            <li>Chỉ đăng ký có trạng thái <strong>Đã duyệt</strong> mới được tính chiếm chỗ.</li>
+                            <li>Đăng ký <strong>Từ chối</strong> hoặc <strong>Đã hủy</strong> không làm giảm số chỗ.</li>
+                            <li>Nếu <code>SoChoCon = 0</code>: Đề tài không được nhận thêm sinh viên.</li>
+                        </ul>
+                    </div>
+
+                    <!-- THỬ NGHIỆM ĐĂNG KÝ ĐỀ TÀI (KIỂM CHỨNG CHẶN KHI HẾT CHỖ) -->
+                    <div class="border rounded p-3 bg-white">
+                        <h6 class="fw-bold small text-primary mb-2">
+                            <i class="bi bi-person-plus-fill me-1"></i>Thử nghiệm đăng ký đề tài (Kiểm tra nghiệp vụ):
+                        </h6>
+                        @if (Model.IsHetCho)
+                        {
+                            <div class="alert alert-secondary py-2 small mb-0">
+                                <i class="bi bi-lock-fill me-1"></i>
+                                <strong>Khóa nhận đăng ký:</strong> Đề tài hiện tại <strong>hết chỗ (SoChoCon &le; 0)</strong>. Theo quy định mục 6.7, không thể nhận thêm sinh viên!
+                            </div>
+                        }
+                        else if (Model.DeTai.TrangThai != "MoDangKy")
+                        {
+                            <div class="alert alert-warning py-2 small mb-0">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Đề tài đang ở trạng thái <strong>@Model.DeTai.TrangThai</strong>, không mở đăng ký.
+                            </div>
+                        }
+                        else
+                        {
+                            <form asp-action="DangKyDeTai" method="post">
+                                <input type="hidden" name="maDeTai" value="@Model.DeTai.MaDeTai" />
+                                <div class="mb-2">
+                                    <label class="form-label small fw-semibold mb-1">Chọn sinh viên đăng ký:</label>
+                                    <select name="maSinhVien" class="form-select form-select-sm" required>
+                                        <option value="">-- Chọn sinh viên --</option>
+                                        @foreach (var sv in sinhViens)
+                                        {
+                                            <option value="@sv.MaSinhVien">@sv.HoTen (@sv.MaSinhVien) - @sv.Lop</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <input type="text" name="lyDoDangKy" class="form-control form-control-sm" placeholder="Lý do đăng ký..." />
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">
+                                    <i class="bi bi-send-check me-1"></i>Gửi Đăng Ký Thử Nghiệm
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DANH SÁCH SINH VIÊN ĐÃ ĐĂNG KÝ VÀ TRẠNG THÁI KIỂM TOÁN -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-bold text-dark">
+                <i class="bi bi-people-fill text-primary me-2"></i>Danh Sách Đăng Ký Đề Tài Thực Tế
+            </h5>
+            <span class="badge bg-primary">Tổng: @Model.DanhSachDangKy.Count bản ghi</span>
+        </div>
+        <div class="card-body p-0">
+            @if (!Model.DanhSachDangKy.Any())
+            {
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                    Chưa có sinh viên nào đăng ký đề tài này.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Mã SV</th>
+                                <th>Họ và tên</th>
+                                <th>Lớp</th>
+                                <th>Ngày đăng ký</th>
+                                <th>Trạng thái</th>
+                                <th>Tính vào sức chứa?</th>
+                                <th>Ghi chú duyệt</th>
+                                <th class="text-end">Thao tác duyệt (Mục 6.7)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var dk in Model.DanhSachDangKy)
+                            {
+                                <tr>
+                                    <td>@dk.MaDangKy</td>
+                                    <td><span class="fw-semibold">@dk.MaSinhVien</span></td>
+                                    <td>@dk.HoTenSinhVien</td>
+                                    <td>@dk.Lop</td>
+                                    <td>@dk.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (dk.TrangThai == "DaDuyet")
+                                        {
+                                            <span class="badge bg-success">Đã duyệt</span>
+                                        }
+                                        else if (dk.TrangThai == "ChoDuyet")
+                                        {
+                                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                        }
+                                        else if (dk.TrangThai == "TuChoi")
+                                        {
+                                            <span class="badge bg-danger">Từ chối</span>
+                                        }
+                                        else if (dk.TrangThai == "DaHuy")
+                                        {
+                                            <span class="badge bg-secondary">Đã hủy</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-dark">@dk.TrangThai</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (dk.IsHopLeTinhCho)
+                                        {
+                                            <span class="text-success small fw-bold">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Có (+1 chiếm chỗ)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">
+                                                <i class="bi bi-dash-circle me-1"></i>Không chiếm chỗ
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-muted small">@(dk.GhiChuDuyet ?? "-")</td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-1">
+                                            @if (dk.TrangThai != "DaDuyet")
+                                            {
+                                                <form asp-action="CapNhatTrangThaiDangKy" method="post" class="d-inline">
+                                                    <input type="hidden" name="maDangKy" value="@dk.MaDangKy" />
+                                                    <input type="hidden" name="trangThaiMoi" value="DaDuyet" />
+                                                    <input type="hidden" name="ghiChu" value="Giảng viên/Admin đã duyệt" />
+                                                    <button type="submit" class="btn btn-success btn-sm py-0 px-2 small" title="Duyệt (sẽ làm giảm SoChoCon)">
+                                                        <i class="bi bi-check-lg"></i> Duyệt
+                                                    </button>
+                                                </form>
+                                            }
+                                            @if (dk.TrangThai != "TuChoi")
+                                            {
+                                                <form asp-action="CapNhatTrangThaiDangKy" method="post" class="d-inline">
+                                                    <input type="hidden" name="maDangKy" value="@dk.MaDangKy" />
+                                                    <input type="hidden" name="trangThaiMoi" value="TuChoi" />
+                                                    <input type="hidden" name="ghiChu" value="Đã từ chối" />
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2 small" title="Từ chối (không tính vào sức chứa)">
+                                                        <i class="bi bi-x-lg"></i> Từ chối
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,445 @@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.ViewModels.DeTaiFilterViewModel
+@{
+    ViewData["Title"] = "Quản lý & Tra cứu Đề tài Tốt nghiệp";
+}
+
+<div class="container-fluid py-3">
+    <!-- Tiêu đề trang & Thanh hướng dẫn -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-journal-bookmark-fill me-2"></i>Tra cứu & Lọc Danh Sách Đề Tài
+            </h2>
+            <p class="text-muted mb-0 small">
+                Hỗ trợ tìm kiếm từ khóa, kết hợp đa bộ lọc, tính toán số chỗ còn từ dữ liệu đăng ký thực tế và phân trang LINQ EF Core.
+            </p>
+        </div>
+        <div class="mt-2 mt-md-0 d-flex gap-2 align-items-center">
+            <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                Tổng kết quả: <strong class="text-primary">@Model.TotalItems</strong> đề tài
+            </span>
+            <a asp-action="Create" class="btn btn-primary btn-sm fw-semibold shadow-sm">
+                <i class="bi bi-plus-lg me-1"></i>+ Thêm Đề Tài Mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Thông báo phản hồi hệ thống -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 px-3 small shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 px-3 small shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show py-2 px-3 small shadow-sm" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-1"></i>@TempData["WarningMessage"]
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Quick Filter Suggestions (Phím tắt kiểm thử nhanh cho mục 6.8) -->
+    <div class="card bg-light border-0 shadow-sm mb-3">
+        <div class="card-body py-2 px-3 d-flex flex-wrap align-items-center gap-2">
+            <span class="small fw-semibold text-secondary"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Kiểm thử nhanh (Mục 6.8):</span>
+            <a href="@Url.Action("Index", "DeTai", new { searchTerm = "AI", hocKy = 1 })" class="btn btn-outline-primary btn-sm rounded-pill py-0 px-2 small">
+                Tìm "AI" + Lọc Học kỳ 1
+            </a>
+            <a href="@Url.Action("Index", "DeTai", new { trangThai = "MoDangKy", tinhTrangCho = "ConCho" })" class="btn btn-outline-success btn-sm rounded-pill py-0 px-2 small">
+                Mở đăng ký + Còn chỗ
+            </a>
+            <a href="@Url.Action("Index", "DeTai", new { sortOrder = "choCon_desc" })" class="btn btn-outline-info btn-sm rounded-pill py-0 px-2 small">
+                Sắp xếp số chỗ còn giảm dần
+            </a>
+            <a href="@Url.Action("Index", "DeTai", new { sortOrder = "choCon_asc" })" class="btn btn-outline-info btn-sm rounded-pill py-0 px-2 small">
+                Sắp xếp số chỗ còn tăng dần
+            </a>
+            <a href="@Url.Action("Index", "DeTai", new { tinhTrangCho = "HetCho" })" class="btn btn-outline-secondary btn-sm rounded-pill py-0 px-2 small">
+                Lọc Đề tài Hết chỗ
+            </a>
+            <a href="@Url.Action("Index", "DeTai")" class="btn btn-outline-danger btn-sm rounded-pill py-0 px-2 small ms-auto">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Xem tất cả / Đặt lại
+            </a>
+        </div>
+    </div>
+
+    <!-- KHUNG TÌM KIẾM, LỌC VÀ SẮP XẾP (Mục 6.3, 6.4, 6.5, 6.8) -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title mb-0 fw-semibold text-secondary">
+                <i class="bi bi-funnel-fill text-primary me-2"></i>Bộ Lọc & Tiêu Chí Tìm Kiếm
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-controller="DeTai" asp-action="Index" id="filterForm">
+                <!-- 6.3. TÌM KIẾM THEO TÊN ĐỀ TÀI / TỪ KHÓA MÔ TẢ & YÊU CẦU -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-9 col-12">
+                        <label for="searchTerm" class="form-label fw-semibold small mb-1">
+                            <i class="bi bi-search me-1"></i>Từ khóa tìm kiếm (Tên đề tài, mô tả, công nghệ, yêu cầu):
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control border-start-0"
+                                   id="searchTerm"
+                                   name="searchTerm"
+                                   value="@Model.SearchTerm"
+                                   placeholder="Nhập tên đề tài, mô tả hoặc yêu cầu (VD: AI, YOLO, ASP.NET, Flutter, ESP32...)" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12">
+                        <!-- 6.5. SẮP XẾP -->
+                        <label for="sortOrder" class="form-label fw-semibold small mb-1">
+                            <i class="bi bi-sort-down me-1"></i>Sắp xếp danh sách:
+                        </label>
+                        <select class="form-select" id="sortOrder" name="sortOrder" onchange="this.form.submit()">
+                            <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder))">Mới nhất (Mặc định)</option>
+                            <option value="ten_asc" selected="@(Model.SortOrder == "ten_asc")">Tên đề tài: A &rarr; Z</option>
+                            <option value="ten_desc" selected="@(Model.SortOrder == "ten_desc")">Tên đề tài: Z &rarr; A</option>
+                            <option value="sv_asc" selected="@(Model.SortOrder == "sv_asc")">Số SV tối đa: Tăng dần</option>
+                            <option value="sv_desc" selected="@(Model.SortOrder == "sv_desc")">Số SV tối đa: Giảm dần</option>
+                            <option value="choCon_asc" selected="@(Model.SortOrder == "choCon_asc")">Số chỗ còn: Tăng dần</option>
+                            <option value="choCon_desc" selected="@(Model.SortOrder == "choCon_desc")">Số chỗ còn: Giảm dần</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 6.4. BỘ LỌC ĐA TIÊU CHÍ KẾT HỢP -->
+                <div class="row g-2 align-items-end">
+                    <!-- Lĩnh vực -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <label for="maLinhVuc" class="form-label fw-semibold small mb-1">Lĩnh vực:</label>
+                        <select class="form-select form-select-sm" id="maLinhVuc" name="maLinhVuc">
+                            <option value="">-- Tất cả lĩnh vực --</option>
+                            @foreach (var lv in Model.LinhVucList)
+                            {
+                                <option value="@lv.Value" selected="@(Model.MaLinhVuc?.ToString() == lv.Value)">
+                                    @lv.Text
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Năm học -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <label for="namHoc" class="form-label fw-semibold small mb-1">Năm học:</label>
+                        <select class="form-select form-select-sm" id="namHoc" name="namHoc">
+                            <option value="">-- Tất cả --</option>
+                            @foreach (var nh in Model.NamHocList)
+                            {
+                                <option value="@nh" selected="@(Model.NamHoc == nh)">
+                                    Năm @nh
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Học kỳ -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <label for="hocKy" class="form-label fw-semibold small mb-1">Học kỳ:</label>
+                        <select class="form-select form-select-sm" id="hocKy" name="hocKy">
+                            <option value="">-- Tất cả --</option>
+                            @foreach (var hk in Model.HocKyList)
+                            {
+                                <option value="@hk" selected="@(Model.HocKy == hk)">
+                                    Học kỳ @hk
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Trạng thái -->
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <label for="trangThai" class="form-label fw-semibold small mb-1">Trạng thái đề tài:</label>
+                        <select class="form-select form-select-sm" id="trangThai" name="trangThai">
+                            <option value="">-- Tất cả --</option>
+                            <option value="MoDangKy" selected="@(Model.TrangThai == "MoDangKy")">Mở đăng ký</option>
+                            <option value="DuSoLuong" selected="@(Model.TrangThai == "DuSoLuong")">Đủ số lượng</option>
+                            <option value="TamKhoa" selected="@(Model.TrangThai == "TamKhoa")">Tạm khóa</option>
+                            <option value="KetThuc" selected="@(Model.TrangThai == "KetThuc")">Kết thúc</option>
+                        </select>
+                    </div>
+
+                    <!-- Còn chỗ / Hết chỗ (Mục 6.4 & 6.7: Tính theo thực tế) -->
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <label for="tinhTrangCho" class="form-label fw-semibold small mb-1">Tình trạng chỗ:</label>
+                        <select class="form-select form-select-sm" id="tinhTrangCho" name="tinhTrangCho">
+                            <option value="">-- Tất cả --</option>
+                            <option value="ConCho" selected="@(Model.TinhTrangCho == "ConCho")">Còn chỗ (&gt; 0)</option>
+                            <option value="HetCho" selected="@(Model.TinhTrangCho == "HetCho")">Hết chỗ (&le; 0)</option>
+                        </select>
+                    </div>
+
+                    <!-- Nút bấm -->
+                    <div class="col-lg-1 col-md-12 col-12 d-flex gap-1">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold" title="Áp dụng tìm kiếm và bộ lọc">
+                            <i class="bi bi-filter"></i> Lọc
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm" title="Đặt lại bộ lọc về mặc định">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DANH SÁCH ĐỀ TÀI HIỂN THỊ (Mục 6.6, 6.7, 6.8) -->
+    @if (!Model.Items.Any())
+    {
+        <!-- THÔNG BÁO KHÔNG CÓ KẾT QUẢ PHÙ HỢP (Mục 6.8) -->
+        <div class="alert alert-warning border-0 shadow-sm text-center py-5 my-4">
+            <div class="mb-3">
+                <i class="bi bi-exclamation-triangle-fill text-warning display-4"></i>
+            </div>
+            <h4 class="fw-bold text-dark">Không tìm thấy đề tài nào phù hợp!</h4>
+            <p class="text-muted mb-3">
+                Không có dữ liệu thỏa mãn các điều kiện tìm kiếm và bộ lọc bạn đã chọn.
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+                <a asp-action="Index" class="btn btn-primary btn-sm px-4">
+                    <i class="bi bi-arrow-repeat me-1"></i>Xem toàn bộ đề tài
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- GRID DANH SÁCH ĐỀ TÀI -->
+        <div class="row g-3 mb-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-xl-4 col-md-6 col-12">
+                    <div class="card h-100 shadow-sm border-0 border-top border-4 @(item.IsLoiNghiepVu ? "border-danger" : item.IsHetCho ? "border-secondary" : "border-primary")">
+                        <div class="card-body d-flex flex-column">
+                            <!-- Header thẻ -->
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-light text-primary border small fw-normal">
+                                    Mã: #@item.MaDeTai
+                                </span>
+                                <!-- Badge Trạng thái đề tài -->
+                                @if (item.TrangThai == "MoDangKy")
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Mở đăng ký
+                                    </span>
+                                }
+                                else if (item.TrangThai == "DuSoLuong")
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle">
+                                        <i class="bi bi-people-fill me-1"></i>Đủ số lượng
+                                    </span>
+                                }
+                                else if (item.TrangThai == "TamKhoa")
+                                {
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                                        <i class="bi bi-lock-fill me-1"></i>Tạm khóa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary border">
+                                        <i class="bi bi-slash-circle me-1"></i>@item.TrangThai
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Tên đề tài -->
+                            <h5 class="card-title fw-bold text-dark mb-2">
+                                <a asp-action="Details" asp-route-id="@item.MaDeTai" class="text-decoration-none text-dark hover-primary">
+                                    @item.TenDeTai
+                                </a>
+                            </h5>
+
+                            <!-- Lĩnh vực, Năm học, Học kỳ -->
+                            <div class="small text-muted mb-2">
+                                <div class="mb-1">
+                                    <i class="bi bi-tag-fill text-secondary me-1"></i>
+                                    <strong>Lĩnh vực:</strong> <span class="badge bg-info text-dark">@item.TenLinhVuc</span>
+                                </div>
+                                <div>
+                                    <i class="bi bi-calendar3 text-secondary me-1"></i>
+                                    <strong>Học kỳ:</strong> @item.HocKy | <strong>Năm học:</strong> @item.NamHoc
+                                </div>
+                            </div>
+
+                            <!-- Mô tả tóm tắt -->
+                            @if (!string.IsNullOrEmpty(item.MoTa))
+                            {
+                                <p class="card-text text-secondary small mb-2 text-truncate-2" title="@item.MoTa">
+                                    @item.MoTa
+                                </p>
+                            }
+
+                            <!-- Yêu cầu tóm tắt -->
+                            @if (!string.IsNullOrEmpty(item.YeuCau))
+                            {
+                                <p class="card-text small text-muted mb-3 text-truncate" title="@item.YeuCau">
+                                    <i class="bi bi-card-checklist text-primary me-1"></i><em>Yêu cầu:</em> @item.YeuCau
+                                </p>
+                            }
+
+                            <div class="mt-auto pt-3 border-top">
+                                <!-- 6.7: KHUNG TÍNH SỐ CHỖ CÒN & DỮ LIỆU ĐĂNG KÝ HỢP LỆ -->
+                                <div class="bg-light rounded p-2 mb-2">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="text-muted">SV tối đa: <strong>@item.SoSinhVienToiDa</strong></span>
+                                        <span class="text-muted">Đã duyệt hợp lệ: <strong class="text-primary">@item.SoSinhVienDangKyHopLe</strong></span>
+                                    </div>
+                                    <div class="progress mb-2" style="height: 6px;">
+                                        @{
+                                            var percent = item.SoSinhVienToiDa > 0 
+                                                ? Math.Min(100, (int)((item.SoSinhVienDangKyHopLe / (double)item.SoSinhVienToiDa) * 100)) 
+                                                : 0;
+                                            var barColor = item.IsLoiNghiepVu ? "bg-danger" : item.IsHetCho ? "bg-warning" : "bg-success";
+                                        }
+                                        <div class="progress-bar @barColor" role="progressbar" style="width: @percent%"></div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="small fw-semibold">Số chỗ còn:</span>
+                                        @if (item.IsLoiNghiepVu)
+                                        {
+                                            <!-- CẢNH BÁO LỖI NGHIỆP VỤ MỤC 6.7 (SoChoCon < 0) -->
+                                            <span class="badge bg-danger text-white px-2 py-1" title="Số đăng ký duyệt vượt quá số lượng tối đa">
+                                                <i class="bi bi-exclamation-octagon-fill me-1"></i>Lỗi: Vượt @(-item.SoChoCon) SV!
+                                            </span>
+                                        }
+                                        else if (item.IsHetCho)
+                                        {
+                                            <!-- HẾT CHỖ (SoChoCon == 0) -->
+                                            <span class="badge bg-secondary text-white px-2 py-1">
+                                                <i class="bi bi-x-circle-fill me-1"></i>Hết chỗ (0)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <!-- CÒN CHỖ (SoChoCon > 0) -->
+                                            <span class="badge bg-success text-white px-2 py-1">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Còn @item.SoChoCon chỗ
+                                            </span>
+                                        }
+                                    </div>
+
+                                    @if (item.IsLoiNghiepVu)
+                                    {
+                                        <div class="text-danger small mt-1 fst-italic">
+                                            <i class="bi bi-info-circle me-1"></i>Lỗi nghiệp vụ: Kiểm tra lại quá trình duyệt!
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Nút thao tác -->
+                                <div class="d-flex gap-1 justify-content-between align-items-center">
+                                    <a asp-action="Details" asp-route-id="@item.MaDeTai" class="btn btn-outline-primary btn-sm flex-grow-1" title="Xem chi tiết và kiểm toán đăng ký">
+                                        <i class="bi bi-eye me-1"></i>Chi Tiết
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.MaDeTai" class="btn btn-outline-warning btn-sm" title="Sửa đề tài (Không có trường SoChoCon)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.MaDeTai" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đề tài này không?');" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Xóa đề tài">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- 6.6. THANH PHÂN TRANG (PAGINATION) -->
+        <!-- Đảm bảo khi chuyển trang giữ nguyên tất cả tham số tìm kiếm, bộ lọc và sắp xếp -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="mt-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                    <span class="small text-muted">
+                        Hiển thị trang <strong>@Model.PageIndex</strong> / <strong>@Model.TotalPages</strong>
+                        (Tổng cộng <strong>@Model.TotalItems</strong> đề tài)
+                    </span>
+                    <ul class="pagination pagination-sm mb-0">
+                        <!-- Nút Trang trước (Previous) -->
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@(Model.HasPreviousPage ? Model.PageIndex - 1 : 1)"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-maLinhVuc="@Model.MaLinhVuc"
+                               asp-route-namHoc="@Model.NamHoc"
+                               asp-route-hocKy="@Model.HocKy"
+                               asp-route-trangThai="@Model.TrangThai"
+                               asp-route-tinhTrangCho="@Model.TinhTrangCho"
+                               asp-route-sortOrder="@Model.SortOrder"
+                               aria-label="Trang trước">
+                                &laquo; Trước
+                            </a>
+                        </li>
+
+                        <!-- Các số trang -->
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-page="@i"
+                                   asp-route-searchTerm="@Model.SearchTerm"
+                                   asp-route-maLinhVuc="@Model.MaLinhVuc"
+                                   asp-route-namHoc="@Model.NamHoc"
+                                   asp-route-hocKy="@Model.HocKy"
+                                   asp-route-trangThai="@Model.TrangThai"
+                                   asp-route-tinhTrangCho="@Model.TinhTrangCho"
+                                   asp-route-sortOrder="@Model.SortOrder">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Nút Trang sau (Next) -->
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@(Model.HasNextPage ? Model.PageIndex + 1 : Model.TotalPages)"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-maLinhVuc="@Model.MaLinhVuc"
+                               asp-route-namHoc="@Model.NamHoc"
+                               asp-route-hocKy="@Model.HocKy"
+                               asp-route-trangThai="@Model.TrangThai"
+                               asp-route-tinhTrangCho="@Model.TinhTrangCho"
+                               asp-route-sortOrder="@Model.SortOrder"
+                               aria-label="Trang sau">
+                                Sau &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        }
+    }
+</div>
+
+<style>
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .hover-primary:hover {
+        color: #0d6efd !important;
+    }
+</style>

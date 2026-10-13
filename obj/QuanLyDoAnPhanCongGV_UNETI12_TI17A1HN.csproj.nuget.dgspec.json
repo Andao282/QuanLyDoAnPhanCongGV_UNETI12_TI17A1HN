@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "G:\\.Net\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj": {}
+    "C:\\Users\\doanh\\OneDrive\\Desktop\\BTLON\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj": {}
   },
   "projects": {
-    "G:\\.Net\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj": {
+    "C:\\Users\\doanh\\OneDrive\\Desktop\\BTLON\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\.Net\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj",
+        "projectUniqueName": "C:\\Users\\doanh\\OneDrive\\Desktop\\BTLON\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj",
         "projectName": "QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN",
-        "projectPath": "G:\\.Net\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj",
-        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
-        "outputPath": "G:\\.Net\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\obj\\",
+        "projectPath": "C:\\Users\\doanh\\OneDrive\\Desktop\\BTLON\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.csproj",
+        "packagesPath": "C:\\Users\\doanh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\doanh\\OneDrive\\Desktop\\BTLON\\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\doanh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -25,7 +25,7 @@
           "net10.0"
         ],
         "sources": {
-          "C:\\LocalNuget": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

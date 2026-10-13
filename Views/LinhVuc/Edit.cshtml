@@ -1,0 +1,98 @@
+﻿@* 
+Họ và tên: Đoàn Quốc Hợp
+MSSV: 23103100097
+Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
+*@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc
+
+@{
+    ViewData["Title"] = "Sửa lĩnh vực";
+}
+
+<div class="container mt-4">
+
+    <h2>SỬA LĨNH VỰC ĐỀ TÀI</h2>
+
+    <hr />
+
+    <form asp-action="Edit" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="MaLinhVuc" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TenLinhVuc" class="form-label">
+                Tên lĩnh vực
+            </label>
+
+            <input asp-for="TenLinhVuc"
+                   class="form-control"
+                   placeholder="Nhập tên lĩnh vực" />
+
+            <span asp-validation-for="TenLinhVuc"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MoTa" class="form-label">
+                Mô tả
+            </label>
+
+            <textarea asp-for="MoTa"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Nhập mô tả lĩnh vực"></textarea>
+
+            <span asp-validation-for="MoTa"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="TrangThai" class="form-label">
+                Trạng thái
+            </label>
+
+            <select asp-for="TrangThai"
+                    class="form-select">
+
+                <option value="HoatDong">
+                    Hoạt động
+                </option>
+
+                <option value="KhongHoatDong">
+                    Không hoạt động
+                </option>
+
+            </select>
+
+            <span asp-validation-for="TrangThai"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <button type="submit"
+                class="btn btn-warning">
+            Cập nhật
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Quay lại
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

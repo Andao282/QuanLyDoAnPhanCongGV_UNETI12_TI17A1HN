@@ -1,0 +1,61 @@
+﻿@* 
+Họ và tên: Đoàn Quốc Hợp
+MSSV: 23103100097
+Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
+*@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc
+
+@{
+    ViewData["Title"] = "Chi tiết lĩnh vực";
+}
+
+<div class="container mt-4">
+
+    <h2>CHI TIẾT LĨNH VỰC ĐỀ TÀI</h2>
+
+    <hr />
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Mã lĩnh vực
+        </dt>
+        <dd class="col-sm-9">
+            @Model.MaLinhVuc
+        </dd>
+
+        <dt class="col-sm-3">
+            Tên lĩnh vực
+        </dt>
+        <dd class="col-sm-9">
+            @Model.TenLinhVuc
+        </dd>
+
+        <dt class="col-sm-3">
+            Mô tả
+        </dt>
+        <dd class="col-sm-9">
+            @Model.MoTa
+        </dd>
+
+        <dt class="col-sm-3">
+            Trạng thái
+        </dt>
+        <dd class="col-sm-9">
+            @Model.TrangThai
+        </dd>
+
+    </dl>
+
+    <a asp-action="Edit"
+       asp-route-id="@Model.MaLinhVuc"
+       class="btn btn-warning">
+        Sửa
+    </a>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</div>

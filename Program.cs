@@ -1,42 +1,55 @@
+// Họ và tên: Đoàn Quốc Hợp
+// MSSV: 23103100097
+// Nội dung thực hiện: Module 1 - Tài khoản, đăng nhập, phân quyền và quản lý lĩnh vực đề tài.
+
 using Microsoft.EntityFrameworkCore;
 using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Data;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Đăng ký MVC
 builder.Services.AddControllersWithViews();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Cấu hình Session
+builder.Services.AddDistributedMemoryCache();
 
-// Thêm đoạn cấu hình DbContext này:
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Cấu hình DbContext kết nối SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// ... (các cấu hình có sẵn phía dưới giữ nguyên)
-
-// Configure the HTTP request pipeline.
+// Cấu hình môi trường
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
+
+// Kích hoạt Session
+app.UseSession();
 
 app.UseAuthorization();
 
+// Static files
 app.MapStaticAssets();
 
+// Cấu hình route mặc định
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

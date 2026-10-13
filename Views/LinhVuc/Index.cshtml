@@ -1,0 +1,93 @@
+﻿@* 
+Họ và tên: Đoàn Quốc Hợp
+MSSV: 23103100097
+Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
+*@
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>
+
+@{
+    ViewData["Title"] = "Quản lý lĩnh vực";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>QUẢN LÝ LĨNH VỰC ĐỀ TÀI</h2>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Thêm lĩnh vực
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Mã lĩnh vực</th>
+                <th>Tên lĩnh vực</th>
+                <th>Mô tả</th>
+                <th>Trạng thái</th>
+                <th style="width: 250px;">Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.MaLinhVuc
+                    </td>
+
+                    <td>
+                        @item.TenLinhVuc
+                    </td>
+
+                    <td>
+                        @item.MoTa
+                    </td>
+
+                    <td>
+                        @item.TrangThai
+                    </td>
+
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@item.MaLinhVuc"
+                           class="btn btn-info btn-sm">
+                            Xem
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@item.MaLinhVuc"
+                           class="btn btn-warning btn-sm">
+                            Sửa
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.MaLinhVuc"
+                           class="btn btn-danger btn-sm">
+                            Xóa
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>

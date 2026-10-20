@@ -233,3 +233,4 @@ C:\Users\doanh\OneDrive\Desktop\BTLON\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\obj\
 C:\Users\doanh\OneDrive\Desktop\BTLON\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\obj\Debug\net10.0\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.genruntimeconfig.cache
 C:\Users\doanh\OneDrive\Desktop\BTLON\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\obj\Debug\net10.0\ref\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.dll
 C:\Users\doanh\OneDrive\Desktop\BTLON\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Users\doanh\OneDrive\Desktop\BTLON\QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN\obj\Debug\net10.0\compressed\jptdhzmv4n-{0}-0e4ecgv0s3-0e4ecgv0s3.gz

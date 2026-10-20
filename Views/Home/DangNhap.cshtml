@@ -1,4 +1,4 @@
-﻿@* 
+﻿ @* 
 Họ và tên: Đoàn Quốc Hợp
 MSSV: 23103100097
 Nội dung thực hiện: Module 1 - Tài khoản, đăng nhập, phân quyền.
@@ -6,64 +6,109 @@ Nội dung thực hiện: Module 1 - Tài khoản, đăng nhập, phân quyền.
 
 @{
     ViewData["Title"] = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
+<div class="login-page">
+    <div class="login-glow login-glow-one"></div>
+    <div class="login-glow login-glow-two"></div>
 
-            <div class="card shadow">
-                <div class="card-header text-center">
-                    <h3>ĐĂNG NHẬP</h3>
-                </div>
+    <div class="login-card">
+        <div class="login-brand">
+            <div class="login-logo">DA</div>
+            <div>
+                <div class="login-brand-title">UNETI <span>TECH</span></div>
+                <div class="login-brand-subtitle">PROJECT MANAGEMENT SYSTEM</div>
+            </div>
+        </div>
 
-                <div class="card-body">
+        <div class="login-heading">
+            <div class="login-badge">
+                <span class="login-status-dot"></span>
+                HỆ THỐNG QUẢN LÝ ĐỒ ÁN
+            </div>
 
-                    @if (ViewBag.Error != null)
-                    {
-                        <div class="alert alert-danger">
-                            @ViewBag.Error
-                        </div>
-                    }
+            <h1>Chào mừng <span>trở lại!</span></h1>
+            <p>Đăng nhập để tiếp tục công việc của bạn.</p>
+        </div>
 
-                    <form asp-controller="Home"
-                          asp-action="DangNhap"
-                          method="post">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger login-error">
+                <strong>Đăng nhập thất bại</strong>
+                <div>@ViewBag.Error</div>
+            </div>
+        }
 
-                        @Html.AntiForgeryToken()
+        <form asp-controller="Home"
+              asp-action="DangNhap"
+              method="post">
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Tên đăng nhập
-                            </label>
+            @Html.AntiForgeryToken()
 
-                            <input type="text"
-                                   name="tenDangNhap"
-                                   class="form-control"
-                                   placeholder="Nhập tên đăng nhập" />
-                        </div>
+            <div class="mb-4">
+                <label class="login-label" for="tenDangNhap">
+                    Tên đăng nhập
+                </label>
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Mật khẩu
-                            </label>
-
-                            <input type="password"
-                                   name="matKhau"
-                                   class="form-control"
-                                   placeholder="Nhập mật khẩu" />
-                        </div>
-
-                        <button type="submit"
-                                class="btn btn-primary w-100">
-                            Đăng nhập
-                        </button>
-
-                    </form>
-
+                <div class="login-input-wrap">
+                    <span class="login-input-icon">⌘</span>
+                    <input type="text"
+                           id="tenDangNhap"
+                           name="tenDangNhap"
+                           class="form-control login-input"
+                           placeholder="Nhập tên đăng nhập"
+                           autocomplete="username"
+                           required />
                 </div>
             </div>
 
+            <div class="mb-4">
+                <label class="login-label" for="matKhau">
+                    Mật khẩu
+                </label>
+
+                <div class="login-input-wrap">
+                    <span class="login-input-icon">✳</span>
+                    <input type="password"
+                           id="matKhau"
+                           name="matKhau"
+                           class="form-control login-input"
+                           placeholder="Nhập mật khẩu"
+                           autocomplete="current-password"
+                           required />
+                </div>
+            </div>
+
+            <button type="submit" class="login-submit">
+                <span>Đăng nhập hệ thống</span>
+                <span class="login-arrow">→</span>
+            </button>
+        </form>
+
+        <div class="login-divider">
+            <span></span>
+            <span>SECURE ACCESS</span>
+            <span></span>
+        </div>
+
+        <div class="login-security">
+            <span class="login-lock">◆</span>
+            Kết nối bảo mật · UNETI
         </div>
     </div>
+
+    <div class="login-footer">
+        © @DateTime.Now.Year UNETI · HỆ THỐNG QUẢN LÝ ĐỒ ÁN
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll(".login-input").forEach(function (input) {
+            input.addEventListener("input", function () {
+                input.classList.toggle("has-value", input.value.length > 0);
+            });
+        });
+    </script>
+}

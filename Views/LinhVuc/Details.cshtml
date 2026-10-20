@@ -1,4 +1,4 @@
-﻿@* 
+﻿ @* 
 Họ và tên: Đoàn Quốc Hợp
 MSSV: 23103100097
 Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
@@ -9,53 +9,66 @@ Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
     ViewData["Title"] = "Chi tiết lĩnh vực";
 }
 
-<div class="container mt-4">
+<div class="lv-form-page">
+    <div class="lv-form-header">
+        <div class="lv-form-eyebrow">MODULE 01 / LINH VUC MANAGEMENT</div>
+        <h1>Chi tiết <span>lĩnh vực đề tài</span></h1>
+        <p>Xem thông tin và trạng thái hiện tại của lĩnh vực được chọn.</p>
+    </div>
 
-    <h2>CHI TIẾT LĨNH VỰC ĐỀ TÀI</h2>
+    <div class="lv-form-card">
+        <div class="lv-form-card-header">
+            <h2>Thông tin lĩnh vực</h2>
+            <p>Thông tin được lấy từ dữ liệu lĩnh vực hiện có.</p>
+        </div>
 
-    <hr />
+        <div class="lv-form-card-body">
+            <dl class="lv-detail-list">
+                <div class="lv-detail-row">
+                    <dt>Mã lĩnh vực</dt>
+                    <dd class="lv-detail-id">#@Model.MaLinhVuc</dd>
+                </div>
 
-    <dl class="row">
+                <div class="lv-detail-row">
+                    <dt>Tên lĩnh vực</dt>
+                    <dd>@Model.TenLinhVuc</dd>
+                </div>
 
-        <dt class="col-sm-3">
-            Mã lĩnh vực
-        </dt>
-        <dd class="col-sm-9">
-            @Model.MaLinhVuc
-        </dd>
+                <div class="lv-detail-row">
+                    <dt>Mô tả</dt>
+                    <dd>@(string.IsNullOrWhiteSpace(Model.MoTa) ? "Chưa có mô tả." : Model.MoTa)</dd>
+                </div>
 
-        <dt class="col-sm-3">
-            Tên lĩnh vực
-        </dt>
-        <dd class="col-sm-9">
-            @Model.TenLinhVuc
-        </dd>
+                <div class="lv-detail-row">
+                    <dt>Trạng thái</dt>
+                    <dd>
+                        @if (Model.TrangThai == "HoatDong")
+                        {
+                            <span class="lv-detail-status">● Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="lv-detail-status"
+                                  style="color:#fbbf24;background:#f59e0b16;border-color:#f59e0b30;">
+                                ● Không hoạt động
+                            </span>
+                        }
+                    </dd>
+                </div>
+            </dl>
 
-        <dt class="col-sm-3">
-            Mô tả
-        </dt>
-        <dd class="col-sm-9">
-            @Model.MoTa
-        </dd>
+            <div class="lv-form-actions">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.MaLinhVuc"
+                   class="lv-form-btn lv-form-btn-primary">
+                    Chỉnh sửa lĩnh vực
+                </a>
 
-        <dt class="col-sm-3">
-            Trạng thái
-        </dt>
-        <dd class="col-sm-9">
-            @Model.TrangThai
-        </dd>
-
-    </dl>
-
-    <a asp-action="Edit"
-       asp-route-id="@Model.MaLinhVuc"
-       class="btn btn-warning">
-        Sửa
-    </a>
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Quay lại
-    </a>
-
+                <a asp-action="Index"
+                   class="lv-form-btn lv-form-btn-secondary">
+                    Quay lại danh sách
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

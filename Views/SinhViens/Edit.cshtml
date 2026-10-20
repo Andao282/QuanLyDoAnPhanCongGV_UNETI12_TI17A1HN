@@ -1,0 +1,88 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 3 - Biểu mẫu sửa sinh viên
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.SinhVien
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Sửa sinh viên";
+}
+
+<div class="container mt-4">
+    <h2>Sửa thông tin sinh viên: @Model.HoTen</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-7">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="MaSinhVien" class="form-label fw-bold"></label>
+                    @* Mã sinh viên là khóa chính, không cho thay đổi *@
+                    <input asp-for="MaSinhVien" class="form-control" readonly />
+                    <span asp-validation-for="MaSinhVien" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="HoTen" class="form-label fw-bold"></label>
+                    <input asp-for="HoTen" class="form-control" />
+                    <span asp-validation-for="HoTen" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NgaySinh" class="form-label fw-bold"></label>
+                    <input asp-for="NgaySinh" type="date" class="form-control" />
+                    <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Lop" class="form-label fw-bold"></label>
+                        <input asp-for="Lop" class="form-control" />
+                        <span asp-validation-for="Lop" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Khoa" class="form-label fw-bold"></label>
+                        <input asp-for="Khoa" class="form-control" />
+                        <span asp-validation-for="Khoa" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ChuyenNganh" class="form-label fw-bold"></label>
+                    <input asp-for="ChuyenNganh" class="form-control" />
+                    <span asp-validation-for="ChuyenNganh" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-bold"></label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SoDienThoai" class="form-label fw-bold"></label>
+                    <input asp-for="SoDienThoai" class="form-control" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TrangThai" class="form-label fw-bold"></label>
+                    <select asp-for="TrangThai" asp-items="@TrangThaiHeThong.SinhVien.TatCa.Select(x => new SelectListItem { Value = x, Text = TrangThaiHeThong.SinhVien.HienThi(x) })" class="form-select"></select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ms-2">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,68 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Lịch sử phân công giảng viên của một sinh viên (mục 8.5)
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.PhanCongHuongDan>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Lịch sử phân công";
+    var maSinhVien = ViewData["MaSinhVien"] as string;
+}
+
+<div class="container mt-4">
+    <h2>Lịch sử phân công giảng viên hướng dẫn</h2>
+    <p class="text-muted">Sinh viên: <strong>@maSinhVien</strong></p>
+    <hr />
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã</th>
+                <th>Đề tài</th>
+                <th>Giảng viên</th>
+                <th class="text-center">Ngày bắt đầu</th>
+                <th class="text-center">Ngày kết thúc</th>
+                <th class="text-center">Trạng thái</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Sinh viên chưa có phân công nào.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var pc in Model)
+                {
+                    <tr>
+                        <td>@pc.MaPhanCong</td>
+                        <td>@(pc.DangKyDeTai?.DeTai?.TenDeTai ?? "-")</td>
+                        <td>@(pc.GiangVien?.HoTen ?? "-")</td>
+                        <td class="text-center">@pc.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@(pc.NgayKetThuc?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        <td class="text-center">
+                            @{
+                                var mau = pc.TrangThai switch
+                                {
+                                    TrangThaiHeThong.PhanCongHuongDan.DangHuongDan => "bg-success",
+                                    TrangThaiHeThong.PhanCongHuongDan.DaThayDoi => "bg-secondary",
+                                    _ => "bg-dark"
+                                };
+                            }
+                            <span class="badge @mau">@TrangThaiHeThong.PhanCongHuongDan.HienThi(pc.TrangThai)</span>
+                        </td>
+                        <td>@(string.IsNullOrWhiteSpace(pc.GhiChu) ? "-" : pc.GhiChu)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách phân công</a>
+</div>

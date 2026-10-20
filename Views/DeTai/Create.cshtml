@@ -1,0 +1,112 @@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DeTai
+@{
+    ViewData["Title"] = "Thêm Mới Đề Tài";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Thêm Mới Đề Tài Tốt Nghiệp
+                    </h5>
+                    <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i>Quay lại
+                    </a>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Ghi chú nghiệp vụ Mục 6.7 -->
+                    <div class="alert alert-info py-2 px-3 small mb-4">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        <strong>Quy định nghiệp vụ (Mục 6.7):</strong> Admin chỉ quản trị <em>Số sinh viên tối đa</em>.
+                        Hệ thống <strong>tuyệt đối không cho phép nhập tay "Số chỗ còn"</strong>, số chỗ còn sẽ được tính tự động từ dữ liệu đăng ký thực tế.
+                    </div>
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Tên đề tài -->
+                        <div class="mb-3">
+                            <label asp-for="TenDeTai" class="form-label fw-semibold">Tên đề tài <span class="text-danger">*</span></label>
+                            <input asp-for="TenDeTai" class="form-control" placeholder="Nhập tên đề tài..." required />
+                            <span asp-validation-for="TenDeTai" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <!-- Lĩnh vực -->
+                            <div class="col-md-6 col-12">
+                                <label asp-for="MaLinhVuc" class="form-label fw-semibold">Lĩnh vực nghiên cứu <span class="text-danger">*</span></label>
+                                <select asp-for="MaLinhVuc" class="form-select" asp-items="ViewBag.MaLinhVuc" required>
+                                    <option value="">-- Chọn lĩnh vực --</option>
+                                </select>
+                                <span asp-validation-for="MaLinhVuc" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="col-md-6 col-12">
+                                <label asp-for="TrangThai" class="form-label fw-semibold">Trạng thái đề tài <span class="text-danger">*</span></label>
+                                <select asp-for="TrangThai" class="form-select" required>
+                                    <option value="MoDangKy">Mở đăng ký</option>
+                                    <option value="DuSoLuong">Đủ số lượng</option>
+                                    <option value="TamKhoa">Tạm khóa</option>
+                                    <option value="KetThuc">Kết thúc</option>
+                                </select>
+                                <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <!-- Số sinh viên tối đa -->
+                            <div class="col-md-4 col-12">
+                                <label asp-for="SoSinhVienToiDa" class="form-label fw-semibold">Số SV tối đa <span class="text-danger">*</span></label>
+                                <input asp-for="SoSinhVienToiDa" type="number" class="form-control" min="1" max="10" required />
+                                <span asp-validation-for="SoSinhVienToiDa" class="text-danger small"></span>
+                                <small class="text-muted d-block mt-1">Sức chứa tối đa của đề tài</small>
+                            </div>
+
+                            <!-- Năm học -->
+                            <div class="col-md-4 col-6">
+                                <label asp-for="NamHoc" class="form-label fw-semibold">Năm học <span class="text-danger">*</span></label>
+                                <input asp-for="NamHoc" type="number" class="form-control" min="2020" max="2035" required />
+                                <span asp-validation-for="NamHoc" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Học kỳ -->
+                            <div class="col-md-4 col-6">
+                                <label asp-for="HocKy" class="form-label fw-semibold">Học kỳ <span class="text-danger">*</span></label>
+                                <select asp-for="HocKy" class="form-select" required>
+                                    <option value="1">Học kỳ 1</option>
+                                    <option value="2">Học kỳ 2</option>
+                                    <option value="3">Học kỳ 3 (Hè)</option>
+                                </select>
+                                <span asp-validation-for="HocKy" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <!-- Mô tả đề tài -->
+                        <div class="mb-3">
+                            <label asp-for="MoTa" class="form-label fw-semibold">Mô tả tóm tắt nội dung đề tài</label>
+                            <textarea asp-for="MoTa" rows="3" class="form-control" placeholder="Mục tiêu, phạm vi nghiên cứu..."></textarea>
+                            <span asp-validation-for="MoTa" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Yêu cầu đề tài -->
+                        <div class="mb-4">
+                            <label asp-for="YeuCau" class="form-label fw-semibold">Yêu cầu đối với sinh viên thực hiện</label>
+                            <textarea asp-for="YeuCau" rows="2" class="form-control" placeholder="Kỹ năng, công nghệ yêu cầu (VD: Python, C#, React...)..."></textarea>
+                            <span asp-validation-for="YeuCau" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                <i class="bi bi-check-circle me-1"></i>Lưu Đề Tài
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

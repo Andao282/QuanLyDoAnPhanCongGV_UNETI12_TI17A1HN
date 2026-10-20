@@ -1,0 +1,149 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Danh sách đăng ký chờ duyệt, tìm kiếm và lọc (mục 8.1)
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Duyệt đăng ký đề tài";
+    var tuKhoa = ViewData["TuKhoa"] as string;
+    var trangThai = ViewData["TrangThai"] as string;
+    int? maLinhVuc = ViewData["MaLinhVuc"] as int?;
+    var soChoCon = ViewData["SoChoCon"] as Dictionary<int, int> ?? new Dictionary<int, int>();
+    var linhVucs = ViewData["DanhSachLinhVuc"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>
+                   ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>();
+}
+
+<div class="container mt-4">
+    <h2>Duyệt đăng ký đề tài</h2>
+    <hr />
+
+    @if (TempData["ThongBao"] is string tb && !string.IsNullOrEmpty(tb))
+    {
+        <div class="alert alert-success">@tb</div>
+    }
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger">@loi</div>
+    }
+
+    @* Các nút chuyển trạng thái lọc: Chờ duyệt / Đã duyệt / Từ chối / Đã hủy / Tất cả *@
+    <div class="btn-group mb-3">
+        @foreach (var tt in new[] { null, TrangThaiHeThong.DangKyDeTai.DaDuyet, TrangThaiHeThong.DangKyDeTai.TuChoi, TrangThaiHeThong.DangKyDeTai.DaHuy })
+        {
+            var ten = tt == null
+                ? "Tất cả"
+                : TrangThaiHeThong.DangKyDeTai.HienThi(tt);
+            var active = trangThai == (tt ?? string.Empty);
+            <a class="btn btn-sm @(active ? "btn-dark" : "btn-outline-dark")"
+               asp-action="Index"
+               asp-route-tuKhoa="@tuKhoa"
+               asp-route-trangThai="@tt"
+               asp-route-maLinhVuc="@maLinhVuc">@ten</a>
+        }
+    </div>
+
+    <form method="get" asp-action="Index" class="row g-2 mb-3">
+        <input type="hidden" name="trangThai" value="@trangThai" />
+        <div class="col-md-4">
+            <input type="text" name="tuKhoa" value="@tuKhoa" class="form-control"
+                   placeholder="Tìm theo tên SV, mã SV, tên đề tài" />
+        </div>
+        <div class="col-md-4">
+            <select name="maLinhVuc" class="form-select">
+                <option value="">-- Tất cả lĩnh vực --</option>
+                @foreach (var lv in linhVucs)
+                {
+                    <option value="@lv.MaLinhVuc" selected="@(maLinhVuc == lv.MaLinhVuc)">@lv.TenLinhVuc</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4 d-grid">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên sinh viên</th>
+                <th>Đề tài</th>
+                <th>Lĩnh vực</th>
+                <th class="text-center">Ngày đăng ký</th>
+                <th class="text-center">Chỗ còn</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted">Không có đăng ký nào phù hợp.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    var con = soChoCon.TryGetValue(item.MaDeTai, out var c) ? c : 0;
+                    <tr>
+                        <td class="fw-bold">@item.SinhVien?.MaSinhVien</td>
+                        <td>@item.SinhVien?.HoTen</td>
+                        <td>@(item.DeTai?.TenDeTai ?? "-")</td>
+                        <td>@(item.DeTai?.LinhVuc?.TenLinhVuc ?? "-")</td>
+                        <td class="text-center">@item.NgayDangKy.ToString("dd/MM/yyyy")</td>
+                        @* Số chỗ còn luôn được tính lại tại thời điểm xem danh sách *@
+                        <td class="text-center">
+                            @if (con > 0)
+                            {
+                                <span class="badge bg-success">Còn @con</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Đã đủ</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @{
+                                var mau = item.TrangThai switch
+                                {
+                                    TrangThaiHeThong.DangKyDeTai.ChoDuyet => "bg-warning text-dark",
+                                    TrangThaiHeThong.DangKyDeTai.DaDuyet => "bg-success",
+                                    TrangThaiHeThong.DangKyDeTai.TuChoi => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @mau">@TrangThaiHeThong.DangKyDeTai.HienThi(item.TrangThai)</span>
+                        </td>
+                        <td class="text-center">
+                            @* Chỉ đăng ký còn Chờ duyệt mới có nút duyệt / từ chối *@
+                            @if (item.TrangThai == TrangThaiHeThong.DangKyDeTai.ChoDuyet)
+                            {
+                                <a class="btn btn-sm btn-success" asp-action="Duyet" asp-route-maDangKy="@item.MaDangKy">Duyệt</a>
+                                <a class="btn btn-sm btn-outline-danger text-danger" asp-action="TuChoi" asp-route-maDangKy="@item.MaDangKy">Từ chối</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">
+                                    @if (!string.IsNullOrWhiteSpace(item.GhiChuDuyet))
+                                    {
+                                        @item.GhiChuDuyet
+                                    }
+                                    else
+                                    {
+                                        <text>--</text>
+                                    }
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

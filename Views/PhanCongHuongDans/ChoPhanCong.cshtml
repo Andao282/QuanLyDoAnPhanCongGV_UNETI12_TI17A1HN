@@ -1,0 +1,90 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Danh sách sinh viên Đã duyệt nhưng chưa có giảng viên hướng dẫn (mục 8.3)
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Chọn sinh viên cần phân công";
+    var tuKhoa = ViewData["TuKhoa"] as string;
+    int? maLinhVuc = ViewData["MaLinhVuc"] as int?;
+    var taiHienTai = ViewData["TaiHienTai"] as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var lvList = ViewData["DanhSachLinhVuc"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>
+                 ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>();
+}
+
+<div class="container mt-4">
+    <h2>Sinh viên đã duyệt - chưa có giảng viên hướng dẫn</h2>
+    <hr />
+
+    @if (TempData["ThongBao"] is string tb && !string.IsNullOrEmpty(tb))
+    {
+        <div class="alert alert-success">@tb</div>
+    }
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger">@loi</div>
+    }
+
+    <form method="get" asp-action="ChoPhanCong" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input type="text" name="tuKhoa" value="@tuKhoa" class="form-control" placeholder="Tìm theo tên SV, mã SV, tên đề tài" />
+        </div>
+        <div class="col-md-4">
+            <select name="maLinhVuc" class="form-select">
+                <option value="">-- Tất cả lĩnh vực --</option>
+                @foreach (var lv in lvList)
+                {
+                    <option value="@lv.MaLinhVuc" selected="@(maLinhVuc == lv.MaLinhVuc)">@lv.TenLinhVuc</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên sinh viên</th>
+                <th>Lớp</th>
+                <th>Đề tài</th>
+                <th>Lĩnh vực</th>
+                <th class="text-center">Ngày đăng ký</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không còn sinh viên nào chờ phân công.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.SinhVien?.MaSinhVien</td>
+                        <td>@item.SinhVien?.HoTen</td>
+                        <td>@(item.SinhVien?.Lop ?? "-")</td>
+                        <td>@(item.DeTai?.TenDeTai ?? "-")</td>
+                        <td>@(item.DeTai?.LinhVuc?.TenLinhVuc ?? "-")</td>
+                        <td class="text-center">@item.NgayDangKy.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-primary" asp-action="PhanCong" asp-route-maDangKy="@item.MaDangKy">Phân công GV</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-outline-secondary mt-2">Xem tất cả phân công</a>
+</div>

@@ -1,0 +1,154 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Danh sách phân công giảng viên hướng dẫn (mục 8.2, 8.4)
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.PhanCongHuongDan>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Phân công giảng viên hướng dẫn";
+    var tuKhoa = ViewData["TuKhoa"] as string;
+    var maGiangVien = ViewData["MaGiangVien"] as string;
+    var trangThai = ViewData["TrangThai"] as string;
+    int? maLinhVuc = ViewData["MaLinhVuc"] as int?;
+    var taiHienTai = ViewData["TaiHienTai"] as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var gvList = ViewData["DanhSachGiangVien"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.GiangVien>
+                 ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.GiangVien>();
+    var lvList = ViewData["DanhSachLinhVuc"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>
+                 ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>();
+}
+
+<div class="container mt-4">
+    <h2>Phân công giảng viên hướng dẫn</h2>
+    <hr />
+
+    @if (TempData["ThongBao"] is string tb && !string.IsNullOrEmpty(tb))
+    {
+        <div class="alert alert-success">@tb</div>
+    }
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger">@loi</div>
+    }
+
+    <div class="mb-3">
+        <a asp-action="ChoPhanCong" class="btn btn-primary">Chọn sinh viên cần phân công</a>
+    </div>
+
+    <form method="get" asp-action="Index" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <input type="text" name="tuKhoa" value="@tuKhoa" class="form-control" placeholder="Tìm theo GV hoặc sinh viên" />
+        </div>
+        <div class="col-md-3">
+            <select name="maGiangVien" class="form-select">
+                <option value="">-- Tất cả giảng viên --</option>
+                @foreach (var gv in gvList)
+                {
+                    <option value="@gv.MaGiangVien" selected="@(maGiangVien == gv.MaGiangVien)">@gv.HoTen</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="maLinhVuc" class="form-select">
+                <option value="">-- Tất cả lĩnh vực --</option>
+                @foreach (var lv in lvList)
+                {
+                    <option value="@lv.MaLinhVuc" selected="@(maLinhVuc == lv.MaLinhVuc)">@lv.TenLinhVuc</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-grid">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+    </form>
+
+    <div class="btn-group mb-3">
+        @foreach (var tt in TrangThaiHeThong.PhanCongHuongDan.TatCa)
+        {
+            var active = trangThai == tt;
+            <a class="btn btn-sm @(active ? "btn-dark" : "btn-outline-dark")"
+               asp-action="Index" asp-route-tuKhoa="@tuKhoa" asp-route-maGiangVien="@maGiangVien"
+               asp-route-maLinhVuc="@maLinhVuc" asp-route-trangThai="@tt">
+                @TrangThaiHeThong.PhanCongHuongDan.HienThi(tt)
+            </a>
+        }
+        <a class="btn btn-sm @(string.IsNullOrEmpty(trangThai) ? "btn-dark" : "btn-outline-dark")"
+           asp-action="Index" asp-route-tuKhoa="@tuKhoa" asp-route-maGiangVien="@maGiangVien"
+           asp-route-maLinhVuc="@maLinhVuc">Tất cả</a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã</th>
+                <th>Giảng viên</th>
+                <th>Sinh viên</th>
+                <th>Đề tài</th>
+                <th class="text-center">Ngày bắt đầu</th>
+                <th class="text-center">Ngày kết thúc</th>
+                <th class="text-center">Tải GV</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="9" class="text-center text-muted">Không có phân công nào phù hợp.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var pc in Model)
+                {
+                    var dangHienTai = pc.TrangThai == TrangThaiHeThong.PhanCongHuongDan.DangHuongDan;
+                    var tai = taiHienTai.TryGetValue(pc.MaGiangVien, out var t) ? t : 0;
+                    <tr>
+                        <td>@pc.MaPhanCong</td>
+                        <td class="fw-bold">@pc.GiangVien?.HoTen</td>
+                        <td>
+                            @pc.DangKyDeTai?.SinhVien?.MaSinhVien
+                            <div class="small text-muted">@pc.DangKyDeTai?.SinhVien?.HoTen</div>
+                        </td>
+                        <td>@(pc.DangKyDeTai?.DeTai?.TenDeTai ?? "-")</td>
+                        <td class="text-center">@pc.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@(pc.NgayKetThuc?.ToString("dd/MM/yyyy") ?? "-")</td>
+                        @* Mục 8.4: tải hiện tại tính bằng LINQ, hiển thị dạng "tải / giới hạn" *@
+                        <td class="text-center">@tai / @(pc.GiangVien?.SoSinhVienHuongDanToiDa ?? 0)</td>
+                        <td class="text-center">
+                            @{
+                                var mau = pc.TrangThai switch
+                                {
+                                    TrangThaiHeThong.PhanCongHuongDan.DangHuongDan => "bg-success",
+                                    TrangThaiHeThong.PhanCongHuongDan.DaThayDoi => "bg-secondary",
+                                    _ => "bg-dark"
+                                };
+                            }
+                            <span class="badge @mau">@TrangThaiHeThong.PhanCongHuongDan.HienThi(pc.TrangThai)</span>
+                        </td>
+                        <td class="text-center">
+                            @* Mục 8.5: chỉ phân công đang hướng dẫn mới được đổi hoặc kết thúc *@
+                            @if (dangHienTai)
+                            {
+                                <a class="btn btn-sm btn-outline-warning text-warning"
+                                   asp-action="ThayDoiGiangVien" asp-route-maPhanCong="@pc.MaPhanCong">Đổi GV</a>
+                                <form asp-action="KetThuc" method="post" class="d-inline"
+                                      onsubmit="return confirm('Xác nhận kết thúc phân công hướng dẫn này?');">
+                                    <input type="hidden" name="maPhanCong" value="@pc.MaPhanCong" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger text-danger">Kết thúc</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -3,12 +3,26 @@ using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Data;
 using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Services;
 
 
-var builder = WebApplication.CreateBuilder(args);
+// Tự động nhận diện thư mục gốc chứa wwwroot dù chạy trong VS hay click trực tiếp file .exe
+var currentDir = Directory.GetCurrentDirectory();
+var contentRoot = Directory.Exists(Path.Combine(currentDir, "wwwroot"))
+    ? currentDir
+    : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = Directory.Exists(contentRoot) ? contentRoot : currentDir
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+<<<<<<< HEAD
 // Cấu hình DbContext:
+=======
+// Cấu hình DbContext
+>>>>>>> origin/main
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -19,6 +33,7 @@ builder.Services.AddScoped<ThongKeService>();
 
 var app = builder.Build();
 
+<<<<<<< HEAD
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -41,6 +56,23 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ... (các cấu hình có sẵn phía dưới giữ nguyên)
+=======
+// Khởi tạo và seed dữ liệu mẫu cho database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        DbInitializer.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Có lỗi xảy ra khi khởi tạo cơ sở dữ liệu.");
+    }
+}
+>>>>>>> origin/main
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -51,16 +83,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=DeTai}/{action=Index}/{id?}");
 
 
 app.Run();

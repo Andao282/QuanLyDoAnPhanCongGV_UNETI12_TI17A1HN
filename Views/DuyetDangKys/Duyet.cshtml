@@ -1,0 +1,75 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Xác nhận duyệt đăng ký đề tài (mục 8.1)
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Duyệt đăng ký";
+    int soChoCon = ViewData["SoChoCon"] as int? ?? 0;
+}
+
+<div class="container mt-4">
+    <h2>Duyệt đăng ký đề tài</h2>
+    <hr />
+
+    <div class="card mb-3">
+        <div class="card-header bg-light fw-bold">Thông tin sinh viên</div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Mã sinh viên</dt>
+                <dd class="col-sm-9 fw-bold">@Model.SinhVien?.MaSinhVien</dd>
+                <dt class="col-sm-3">Họ tên</dt>
+                <dd class="col-sm-9">@Model.SinhVien?.HoTen</dd>
+                <dt class="col-sm-3">Lớp</dt>
+                <dd class="col-sm-9">@(Model.SinhVien?.Lop ?? "-")</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light fw-bold">Thông tin đăng ký</div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Đề tài</dt>
+                <dd class="col-sm-9 fw-bold">@(Model.DeTai?.TenDeTai ?? "-")</dd>
+                <dt class="col-sm-3">Lĩnh vực</dt>
+                <dd class="col-sm-9">@(Model.DeTai?.LinhVuc?.TenLinhVuc ?? "-")</dd>
+                <dt class="col-sm-3">Ngày đăng ký</dt>
+                <dd class="col-sm-9">@Model.NgayDangKy.ToString("dd/MM/yyyy")</dd>
+                <dt class="col-sm-3">Số lượng tối đa</dt>
+                <dd class="col-sm-9">@(Model.DeTai?.SoSinhVienToiDa ?? 0) sinh viên</dd>
+                <dt class="col-sm-3">Số chỗ còn</dt>
+                <dd class="col-sm-9">
+                    @if (soChoCon > 0)
+                    {
+                        <span class="badge bg-success">Còn @soChoCon chỗ</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Đề tài đã đủ số lượng</span>
+                    }
+                </dd>
+                <dt class="col-sm-3">Lý do sinh viên đăng ký</dt>
+                <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.LyDoDangKy) ? "-" : Model.LyDoDangKy)</dd>
+            </dl>
+        </div>
+    </div>
+
+    @* Mục 7.6: số chỗ được hệ thống kiểm tra lại khi bấm Duyệt, không chỉ dựa vào con số ở trên *@
+    <form asp-action="Duyet" method="post">
+        <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+
+        <div class="mb-3">
+            <label for="ghiChu" class="form-label fw-bold">Ghi chú cho sinh viên (không bắt buộc)</label>
+            <textarea name="ghiChu" id="ghiChu" rows="3" class="form-control"
+                      placeholder="Ví dụ: Hợp lý, đề nghị liên hệ giảng viên để bắt đầu."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success px-4">Xác nhận duyệt</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Quay lại</a>
+    </form>
+</div>

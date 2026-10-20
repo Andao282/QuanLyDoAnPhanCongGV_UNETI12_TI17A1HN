@@ -26,6 +26,11 @@ namespace QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models
         [Required]
         public string TrangThai { get; set; } // ChoDuyet, DaDuyet, TuChoi, DaHuy
 
+        // Mục 8.6 đề tài: theo dõi tiến độ thực hiện sau khi đăng ký được duyệt và phân công GVHD
+        [Required]
+        [StringLength(30)]
+        public string TrangThaiThucHien { get; set; } = "ChuaBatDau"; // ChuaBatDau, DangThucHien, HoanThanh
+
         public string? GhiChuDuyet { get; set; }
 
         [ForeignKey("MaSinhVien")]

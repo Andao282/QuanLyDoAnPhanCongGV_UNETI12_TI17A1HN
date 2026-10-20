@@ -1,0 +1,94 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 3 - Chi tiết sinh viên kèm lịch sử đăng ký đề tài
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.SinhVien
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Chi tiết sinh viên";
+    var dangKys = ViewData["DangKys"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>
+                  ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>();
+}
+
+<div class="container mt-4">
+    <h2>Chi tiết sinh viên</h2>
+    <hr />
+
+    <div class="card mb-4">
+        <div class="card-header bg-light fw-bold">Thông tin cá nhân</div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Mã sinh viên</dt>
+                <dd class="col-sm-9">@Model.MaSinhVien</dd>
+
+                <dt class="col-sm-3">Họ và tên</dt>
+                <dd class="col-sm-9">@Model.HoTen</dd>
+
+                <dt class="col-sm-3">Ngày sinh</dt>
+                <dd class="col-sm-9">@(Model.NgaySinh?.ToString("dd/MM/yyyy") ?? "-")</dd>
+
+                <dt class="col-sm-3">Lớp</dt>
+                <dd class="col-sm-9">@(Model.Lop ?? "-")</dd>
+
+                <dt class="col-sm-3">Khoa</dt>
+                <dd class="col-sm-9">@(Model.Khoa ?? "-")</dd>
+
+                <dt class="col-sm-3">Chuyên ngành</dt>
+                <dd class="col-sm-9">@(Model.ChuyenNganh ?? "-")</dd>
+
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@(Model.Email ?? "-")</dd>
+
+                <dt class="col-sm-3">Số điện thoại</dt>
+                <dd class="col-sm-9">@(Model.SoDienThoai ?? "-")</dd>
+
+                <dt class="col-sm-3">Tài khoản</dt>
+                <dd class="col-sm-9">@(Model.TaiKhoan?.TenDangNhap ?? "-")</dd>
+
+                <dt class="col-sm-3">Trạng thái</dt>
+                <dd class="col-sm-9">@TrangThaiHeThong.SinhVien.HienThi(Model.TrangThai)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light fw-bold">Lịch sử đăng ký đề tài</div>
+        <div class="card-body">
+            @if (!dangKys.Any())
+            {
+                <p class="text-muted mb-0">Sinh viên chưa đăng ký đề tài nào.</p>
+            }
+            else
+            {
+                <table class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Đề tài</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Trạng thái đăng ký</th>
+                            <th>Trạng thái thực hiện</th>
+                            <th>Ghi chú duyệt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dk in dangKys)
+                        {
+                            <tr>
+                                <td>@(dk.DeTai?.TenDeTai ?? "-")</td>
+                                <td>@dk.NgayDangKy.ToString("dd/MM/yyyy")</td>
+                                <td>@TrangThaiHeThong.DangKyDeTai.HienThi(dk.TrangThai)</td>
+                                <td>@TrangThaiHeThong.TrangThaiThucHien.HienThi(dk.TrangThaiThucHien)</td>
+                                <td>@(string.IsNullOrWhiteSpace(dk.GhiChuDuyet) ? "-" : dk.GhiChuDuyet)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-outline-secondary mt-3">Quay lại danh sách</a>
+</div>

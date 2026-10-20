@@ -1,0 +1,37 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Từ chối đăng ký đề tài, bắt buộc có lý do (mục 8.1)
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Từ chối đăng ký";
+}
+
+<div class="container mt-4">
+    <h2>Từ chối đăng ký đề tài</h2>
+    <hr />
+
+    <div class="alert alert-warning">
+        Đăng ký của <strong>@Model.SinhVien?.HoTen (@Model.SinhVien?.MaSinhVien)</strong>
+        với đề tài <strong>@(Model.DeTai?.TenDeTai ?? "-")</strong> sẽ chuyển sang trạng thái
+        <em>@TrangThaiHeThong.DangKyDeTai.HienThi(TrangThaiHeThong.DangKyDeTai.TuChoi)</em>.
+    </div>
+
+    <form asp-action="TuChoi" method="post">
+        <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+
+        <div class="mb-3">
+            <label for="lyDoTuChoi" class="form-label fw-bold text-danger">Lý do từ chối <span class="text-danger">*</span></label>
+            <textarea name="lyDoTuChoi" id="lyDoTuChoi" rows="4" required class="form-control"
+                      placeholder="Nêu rõ lý do để sinh viên biết cần điều chỉnh gì."></textarea>
+            <div class="form-text">Bắt buộc nhập lý do: sinh viên dùng thông tin này để đăng ký lại.</div>
+        </div>
+
+        <button type="submit" class="btn btn-danger px-4">Xác nhận từ chối</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Quay lại</a>
+    </form>
+</div>

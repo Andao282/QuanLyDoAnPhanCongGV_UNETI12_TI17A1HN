@@ -1,78 +1,53 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Giao diện Form Sinh viên đăng ký đề tài
+*@
+
 @model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Đăng ký đề tài đồ án";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <h2>Gửi yêu cầu đăng ký đề tài</h2>
+    <hr />
 
-<h4>DangKyDeTai</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                @* Vùng này sẽ hiển thị các lỗi hệ thống chung (như sinh viên đã có đề tài) *@
+                <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
 
-            <div class="form-group">
-                <label asp-for="MaSinhVien" class="control-label"></label>
-                <input asp-for="MaSinhVien" class="form-control" />
-                <span asp-validation-for="MaSinhVien" class="text-danger"></span>
-            </div>
+                <div class="form-group mb-3">
+                    <label asp-for="MaDeTai" class="control-label fw-bold">Chọn Đề Tài <span class="text-danger">*</span></label>
+                    <select asp-for="MaDeTai" class="form-control" asp-items="ViewBag.MaDeTai">
+                        <option value="">-- Vui lòng chọn một đề tài --</option>
+                    </select>
+                    @* Lỗi cụ thể của đề tài (hết chỗ, spam) sẽ hiện ở đây *@
+                    <span asp-validation-for="MaDeTai" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="MaDeTai" class="control-label"></label>
-                <input asp-for="MaDeTai" class="form-control" />
-                <span asp-validation-for="MaDeTai" class="text-danger"></span>
-            </div>
+                <div class="form-group mb-3">
+                    <label asp-for="LyDoDangKy" class="control-label fw-bold">Lý do/Mong muốn đăng ký</label>
+                    <textarea asp-for="LyDoDangKy" class="form-control" rows="4" placeholder="Ví dụ: Em rất thích tìm hiểu về mảng này..."></textarea>
+                    <span asp-validation-for="LyDoDangKy" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="NgayDangKy" class="control-label"></label>
-                <input asp-for="NgayDangKy" class="form-control" />
-                <span asp-validation-for="NgayDangKy" class="text-danger"></span>
-            </div>
+                @* Các trường Mã Sinh Viên, Ngày Đăng Ký, Trạng Thái đã được xử lý ngầm trong Controller nên không cần vẽ ra HTML *@
 
-            <div class="form-group">
-                <label asp-for="LyDoDangKy" class="control-label"></label>
-                <input asp-for="LyDoDangKy" class="form-control" />
-                <span asp-validation-for="LyDoDangKy" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="GhiChuDuyet" class="control-label"></label>
-                <input asp-for="GhiChuDuyet" class="form-control" />
-                <span asp-validation-for="GhiChuDuyet" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="SinhVien" class="control-label"></label>
-                <input asp-for="SinhVien" class="form-control" />
-                <span asp-validation-for="SinhVien" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="DeTai" class="control-label"></label>
-                <input asp-for="DeTai" class="form-control" />
-                <span asp-validation-for="DeTai" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="PhanCongHuongDans" class="control-label"></label>
-                <input asp-for="PhanCongHuongDans" class="form-control" />
-                <span asp-validation-for="PhanCongHuongDans" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Gửi Yêu Cầu Đăng Ký</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

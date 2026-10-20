@@ -1,0 +1,97 @@
+﻿@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 3 - Danh sách lịch sử đăng ký đề tài của sinh viên
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Lịch sử đăng ký";
+    // GVHD hiện tại của từng đăng ký, truyền từ controller (mục 7.5)
+    var gvHienTai = ViewData["GvHienTai"] as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<div class="container mt-4">
+    <h2>Lịch sử đăng ký đề tài của bạn</h2>
+    <hr />
+
+    @* Thông báo sau khi đăng ký / hủy đăng ký thành công *@
+    @if (TempData["ThongBao"] is string thongBao && !string.IsNullOrEmpty(thongBao))
+    {
+        <div class="alert alert-success" role="alert">@thongBao</div>
+    }
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger" role="alert">@loi</div>
+    }
+
+    <div class="mb-3">
+        <a asp-action="Create" class="btn btn-primary">Đăng ký đề tài mới</a>
+    </div>
+
+    <table class="table table-bordered table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th class="text-center">STT</th>
+                <th>Tên đề tài</th>
+                <th>Ngày đăng ký</th>
+                <th>GVHD hiện tại</th>
+                <th class="text-center">Trạng thái</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Bạn chưa có lịch sử đăng ký đề tài nào.</td>
+                </tr>
+            }
+            else
+            {
+                int stt = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">@(stt++)</td>
+                        <td class="fw-bold">@(item.DeTai?.TenDeTai ?? "(Đề tài đã bị xóa)")</td>
+                        <td>@item.NgayDangKy.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @* Mục 7.5: sinh viên thấy được GVHD hiện tại *@
+                            @(gvHienTai.TryGetValue(item.MaDangKy, out var tenGv) ? tenGv : "Chưa phân công")
+                        </td>
+                        <td class="text-center">
+                            @* Dùng hằng số trạng thái chung thay vì gõ chuỗi (mục 9.1) *@
+                            @{
+                                var tt = item.TrangThai;
+                                var mau = tt switch
+                                {
+                                    TrangThaiHeThong.DangKyDeTai.ChoDuyet => "bg-warning text-dark",
+                                    TrangThaiHeThong.DangKyDeTai.DaDuyet => "bg-success",
+                                    TrangThaiHeThong.DangKyDeTai.TuChoi => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @mau">@TrangThaiHeThong.DangKyDeTai.HienThi(tt)</span>
+                            <div class="small text-muted mt-1">
+                                Thực hiện: @TrangThaiHeThong.TrangThaiThucHien.HienThi(item.TrangThaiThucHien)
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-primary"
+                               asp-action="Details" asp-route-maDangKy="@item.MaDangKy">Chi tiết</a>
+                            @* Mục 7.4: chỉ được hủy khi còn Chờ duyệt *@
+                            @if (item.TrangThai == TrangThaiHeThong.DangKyDeTai.ChoDuyet)
+                            {
+                                <a class="btn btn-sm btn-outline-danger text-danger"
+                                   asp-action="HuyDangKy" asp-route-maDangKy="@item.MaDangKy">Hủy</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

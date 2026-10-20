@@ -1,0 +1,101 @@
+﻿ @* 
+Họ và tên: Đoàn Quốc Hợp
+MSSV: 23103100097
+Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
+*@
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc
+
+@{
+    ViewData["Title"] = "Thêm lĩnh vực";
+}
+
+<div class="lv-form-page">
+    <div class="lv-form-header">
+        <div class="lv-form-eyebrow">MODULE 01 / LINH VUC MANAGEMENT</div>
+        <h1>Thêm <span>lĩnh vực đề tài</span></h1>
+        <p>Tạo lĩnh vực mới để phân loại và quản lý các đề tài nghiên cứu.</p>
+    </div>
+
+    <div class="lv-form-card">
+        <div class="lv-form-card-header">
+            <h2>Thông tin lĩnh vực</h2>
+            <p>Vui lòng nhập đầy đủ thông tin trước khi lưu.</p>
+        </div>
+
+        <div class="lv-form-card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="lv-form-error mb-3">
+                </div>
+
+                <div class="lv-form-group">
+                    <label asp-for="TenLinhVuc" class="lv-form-label">
+                        Tên lĩnh vực <span class="lv-required">*</span>
+                    </label>
+
+                    <input asp-for="TenLinhVuc"
+                           class="lv-form-control"
+                           placeholder="Ví dụ: Công nghệ thông tin" />
+
+                    <span asp-validation-for="TenLinhVuc"
+                          class="lv-form-error"></span>
+
+                    <small class="lv-form-hint">
+                        Nhập tên dễ hiểu và không trùng với lĩnh vực đã có.
+                    </small>
+                </div>
+
+                <div class="lv-form-group">
+                    <label asp-for="MoTa" class="lv-form-label">
+                        Mô tả lĩnh vực
+                    </label>
+
+                    <textarea asp-for="MoTa"
+                              class="lv-form-control"
+                              rows="4"
+                              placeholder="Nhập mô tả về lĩnh vực..."></textarea>
+
+                    <span asp-validation-for="MoTa"
+                          class="lv-form-error"></span>
+                </div>
+
+                <div class="lv-form-group">
+                    <label asp-for="TrangThai" class="lv-form-label">
+                        Trạng thái <span class="lv-required">*</span>
+                    </label>
+
+                    <select asp-for="TrangThai" class="lv-form-control">
+                        <option value="HoatDong">Hoạt động</option>
+                        <option value="KhongHoatDong">Không hoạt động</option>
+                    </select>
+
+                    <span asp-validation-for="TrangThai"
+                          class="lv-form-error"></span>
+
+                    <small class="lv-form-hint">
+                        Chọn trạng thái áp dụng cho lĩnh vực này.
+                    </small>
+                </div>
+
+                <div class="lv-form-actions">
+                    <button type="submit" class="lv-form-btn lv-form-btn-primary">
+                        Lưu lĩnh vực
+                    </button>
+
+                    <a asp-action="Index"
+                       class="lv-form-btn lv-form-btn-secondary">
+                        Quay lại danh sách
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

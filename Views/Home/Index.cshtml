@@ -1,8 +1,120 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿ @{
+    ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home-dashboard">
+    <section class="home-hero">
+        <div class="home-hero-content">
+            <div class="home-eyebrow">
+                <span class="home-status-dot"></span>
+                HỆ THỐNG QUẢN LÝ ĐỒ ÁN
+            </div>
+
+            <h1>
+                Xin chào!
+                <br />
+                <span>Chào mừng trở lại.</span>
+            </h1>
+
+            <p>
+                Quản lý lĩnh vực đề tài và theo dõi các thông tin trong hệ thống
+                trên một giao diện tập trung.
+            </p>
+
+            <div class="home-hero-actions">
+                <a asp-controller="LinhVuc"
+                   asp-action="Index"
+                   class="home-btn-primary">
+                    <span>Quản lý lĩnh vực</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="home-hero-visual" aria-hidden="true">
+            <div class="home-orbit home-orbit-outer"></div>
+            <div class="home-orbit home-orbit-inner"></div>
+            <div class="home-core">
+                <span class="home-core-symbol">✦</span>
+                <span class="home-core-label">PROJECT</span>
+                <span class="home-core-subtitle">MANAGEMENT</span>
+            </div>
+            <span class="home-orbit-dot home-orbit-dot-one"></span>
+            <span class="home-orbit-dot home-orbit-dot-two"></span>
+        </div>
+    </section>
+
+    <section class="home-section">
+        <div class="home-section-heading">
+            <div>
+                <div class="home-section-eyebrow">WORKSPACE</div>
+                <h2>Trung tâm điều khiển</h2>
+                <p>Truy cập nhanh vào chức năng quản lý hiện có.</p>
+            </div>
+            <span class="home-section-tag">MODULE 01</span>
+        </div>
+
+        <div class="home-module-grid">
+            <a asp-controller="LinhVuc"
+               asp-action="Index"
+               class="home-module-card">
+                <div class="home-module-top">
+                    <div class="home-module-icon">⌘</div>
+                    <span class="home-module-arrow">↗</span>
+                </div>
+
+                <div class="home-module-number">01 / MANAGEMENT</div>
+                <h3>Quản lý lĩnh vực</h3>
+                <p>
+                    Thêm, xem, chỉnh sửa và quản lý trạng thái các lĩnh vực đề tài.
+                </p>
+
+                <div class="home-module-footer">
+                    <span class="home-module-indicator"></span>
+                    <span>Truy cập chức năng</span>
+                </div>
+            </a>
+
+            <div class="home-module-card home-module-card-muted">
+                <div class="home-module-top">
+                    <div class="home-module-icon home-module-icon-muted">◇</div>
+                    <span class="home-module-label">MỞ RỘNG</span>
+                </div>
+
+                <div class="home-module-number">02 / PLANNED</div>
+                <h3>Quản lý đề tài</h3>
+                <p>
+                    Khu vực dành cho chức năng quản lý đề tài khi được tích hợp.
+                </p>
+
+                <div class="home-module-footer">
+                    <span class="home-module-indicator home-module-indicator-muted"></span>
+                    <span>Chưa tích hợp tại trang chủ</span>
+                </div>
+            </div>
+
+            <div class="home-module-card home-module-card-muted">
+                <div class="home-module-top">
+                    <div class="home-module-icon home-module-icon-muted">◎</div>
+                    <span class="home-module-label">MỞ RỘNG</span>
+                </div>
+
+                <div class="home-module-number">03 / PLANNED</div>
+                <h3>Phân công giảng viên</h3>
+                <p>
+                    Khu vực dành cho chức năng phân công khi được tích hợp.
+                </p>
+
+                <div class="home-module-footer">
+                    <span class="home-module-indicator home-module-indicator-muted"></span>
+                    <span>Chưa tích hợp tại trang chủ</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="home-dashboard-footer">
+        <span>PROJECT MANAGEMENT SYSTEM</span>
+        <span>UNETI · MODULE 01</span>
+    </footer>
 </div>

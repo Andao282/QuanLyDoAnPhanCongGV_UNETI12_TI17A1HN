@@ -1,0 +1,178 @@
+﻿
+@*
+Họ và tên: Đoàn Quốc Hợp
+MSSV: 23103100097
+Nội dung thực hiện: Module 1 - Quản lý lĩnh vực đề tài.
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>
+
+@{
+    ViewData["Title"] = "Quản lý lĩnh vực";
+    var danhSach = Model?.ToList() ?? new List<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.LinhVuc>();
+}
+
+<div class="lv-page">
+
+    <div class="lv-heading">
+        <div>
+            <div class="lv-eyebrow">
+                <span class="lv-dot"></span>
+                ADMINISTRATION / MODULE 01
+            </div>
+            <h1>Quản lý <span>lĩnh vực đề tài</span></h1>
+            <p>Quản lý và theo dõi các lĩnh vực nghiên cứu của sinh viên.</p>
+        </div>
+
+        <a asp-action="Create" class="lv-add-btn">
+            <span class="lv-plus">+</span>
+            Thêm lĩnh vực
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <strong>✓ Thành công:</strong> @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <strong>!</strong> @TempData["Error"]
+        </div>
+    }
+
+    <div class="lv-stats">
+        <div class="lv-stat-card">
+            <div class="lv-stat-icon lv-purple">▦</div>
+            <div>
+                <div class="lv-stat-label">TỔNG LĨNH VỰC</div>
+                <div class="lv-stat-number">@danhSach.Count</div>
+                <div class="lv-stat-note">Lĩnh vực trong hệ thống</div>
+            </div>
+        </div>
+
+        <div class="lv-stat-card">
+            <div class="lv-stat-icon lv-cyan">◈</div>
+            <div>
+                <div class="lv-stat-label">ĐANG HIỂN THỊ</div>
+                <div class="lv-stat-number">@danhSach.Count(x => x.TrangThai == "HoatDong")</div>
+                <div class="lv-stat-note">Có trạng thái HoatDong</div>
+            </div>
+        </div>
+
+        <div class="lv-stat-card">
+            <div class="lv-stat-icon lv-orange">◷</div>
+            <div>
+                <div class="lv-stat-label">TRẠNG THÁI KHÁC</div>
+                <div class="lv-stat-number">@danhSach.Count(x => x.TrangThai != "HoatDong")</div>
+                <div class="lv-stat-note">Không mang trạng thái HoatDong</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lv-table-card">
+        <div class="lv-table-heading">
+            <div>
+                <h2>Danh sách lĩnh vực</h2>
+                <p>Thông tin các lĩnh vực hiện có trong cơ sở dữ liệu.</p>
+            </div>
+            <div class="lv-record-count">
+                @danhSach.Count bản ghi
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover lv-table">
+                <thead>
+                    <tr>
+                        <th>MÃ</th>
+                        <th>TÊN LĨNH VỰC</th>
+                        <th>MÔ TẢ</th>
+                        <th>TRẠNG THÁI</th>
+                        <th class="lv-action-column">THAO TÁC</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (danhSach.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="lv-empty">
+                                <div class="lv-empty-icon">▦</div>
+                                <strong>Chưa có lĩnh vực nào</strong>
+                                <p>Hãy thêm lĩnh vực đầu tiên vào hệ thống.</p>
+                                <a asp-action="Create" class="btn btn-primary">+ Thêm lĩnh vực</a>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in danhSach)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="lv-id">#@item.MaLinhVuc</span>
+                                </td>
+
+                                <td>
+                                    <div class="lv-name">
+                                        <span class="lv-name-icon">◈</span>
+                                        <span>@item.TenLinhVuc</span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="lv-description">
+                                        @(string.IsNullOrWhiteSpace(item.MoTa) ? "Chưa có mô tả" : item.MoTa)
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @if (item.TrangThai == "HoatDong")
+                                    {
+                                        <span class="lv-status lv-status-active">
+                                            <span></span> Hoạt động
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="lv-status lv-status-other">
+                                            <span></span> @item.TrangThai
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="lv-actions">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.MaLinhVuc"
+                                           class="lv-action lv-view"
+                                           title="Xem chi tiết">Xem</a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.MaLinhVuc"
+                                           class="lv-action lv-edit"
+                                           title="Sửa lĩnh vực">Sửa</a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.MaLinhVuc"
+                                           class="lv-action lv-delete"
+                                           title="Xóa lĩnh vực">Xóa</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="lv-table-footer">
+            <span>UNETI PROJECT MANAGEMENT</span>
+            <span>Tổng cộng <strong>@danhSach.Count</strong> lĩnh vực</span>
+        </div>
+    </div>
+</div>

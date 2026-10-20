@@ -18,11 +18,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-<<<<<<< HEAD
-// Cấu hình DbContext:
-=======
-// Cấu hình DbContext
->>>>>>> origin/main
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -33,7 +29,7 @@ builder.Services.AddScoped<ThongKeService>();
 
 var app = builder.Build();
 
-<<<<<<< HEAD
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -56,7 +52,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ... (các cấu hình có sẵn phía dưới giữ nguyên)
-=======
+
 // Khởi tạo và seed dữ liệu mẫu cho database
 using (var scope = app.Services.CreateScope())
 {
@@ -72,7 +68,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Có lỗi xảy ra khi khởi tạo cơ sở dữ liệu.");
     }
 }
->>>>>>> origin/main
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

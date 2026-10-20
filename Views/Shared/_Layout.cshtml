@@ -24,6 +24,40 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
+<<<<<<< HEAD
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+
+                        @* Module 3: quản lý sinh viên và đăng ký đề tài *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="m3" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Module 3 - Sinh viên
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="m3">
+                                <li><a class="dropdown-item" asp-controller="DangKyDeTais" asp-action="Create">Đăng ký đề tài</a></li>
+                                <li><a class="dropdown-item" asp-controller="DangKyDeTais" asp-action="Index">Lịch sử đăng ký</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="SinhViens" asp-action="Index">Quản lý sinh viên</a></li>
+                            </ul>
+                        </li>
+
+                        @* Module 4: duyệt đăng ký, phân công GV, theo dõi, thống kê *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="m4" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Module 4 - Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="m4">
+                                <li><a class="dropdown-item" asp-controller="DuyetDangKys" asp-action="Index">Duyệt đăng ký đề tài</a></li>
+                                <li><a class="dropdown-item" asp-controller="PhanCongHuongDans" asp-action="ChoPhanCong">Phân công GVHD</a></li>
+                                <li><a class="dropdown-item" asp-controller="PhanCongHuongDans" asp-action="Index">Danh sách phân công</a></li>
+                                <li><a class="dropdown-item" asp-controller="TienDo" asp-action="Index">Theo dõi tiến độ</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                                <li><a class="dropdown-item" asp-controller="ThongKe" asp-action="Index">Thống kê</a></li>
+                            </ul>
+=======
                             <a class="nav-link text-dark fw-semibold" asp-area="" asp-controller="DeTai" asp-action="Index">
                                 <i class="bi bi-collection-fill me-1 text-primary"></i>Danh Sách Đề Tài (6.3 - 6.8)
                             </a>
@@ -33,6 +67,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Chính Sách</a>
+>>>>>>> origin/main
                         </li>
                     </ul>
                 </div>

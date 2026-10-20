@@ -1,0 +1,40 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Thay đổi giảng viên hướng dẫn, giữ nguyên lịch sử (mục 8.5)
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Thay đổi giảng viên hướng dẫn";
+    ViewData["SubmitAction"] = "ThayDoiGiangVien";
+    ViewData["NhanNut"] = "Xác nhận thay đổi";
+    var phanCong = ViewData["PhanCong"] as QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.PhanCongHuongDan;
+}
+
+<div class="container mt-4">
+    <h2>Thay đổi giảng viên hướng dẫn</h2>
+    <hr />
+
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger">@loi</div>
+    }
+
+    @if (phanCong != null)
+    {
+        <div class="alert alert-info">
+            Giảng viên hiện tại: <strong>@phanCong.GiangVien?.HoTen (@phanCong.MaGiangVien)</strong>,
+            bắt đầu từ <strong>@phanCong.NgayBatDau.ToString("dd/MM/yyyy")</strong>.
+            <div class="mt-1 small">
+                Mục 8.5: phân công cũ không bị xóa mà được chuyển sang trạng thái
+                <em>@TrangThaiHeThong.PhanCongHuongDan.HienThi(TrangThaiHeThong.PhanCongHuongDan.DaThayDoi)</em>
+                để tra cứu lịch sử.
+            </div>
+        </div>
+    }
+
+    <partial name="_FormPhanCong" model="Model" />
+</div>

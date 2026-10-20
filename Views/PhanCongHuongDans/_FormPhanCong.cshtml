@@ -1,0 +1,101 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Form dùng chung cho phân công giảng viên và thay đổi giảng viên (mục 8.3, 8.5)
+Nhận qua ViewData:
+  TieuDe             - tiêu đề form
+  SubmitAction       - "PhanCong" hoặc "ThayDoiGiangVien"
+  NhanNut            - chữ trên nút xác nhận
+  MaPhanCong         - mã phân công cũ (chỉ có khi thay đổi), null khi phân công lần đầu
+  MaGiangVienHienTai - giảng viên đang hướng dẫn (chỉ có khi thay đổi)
+  DanhSachGv         - giảng viên đủ điều kiện (đã lọc theo mục 8.3, 8.4)
+  TaiHienTai         - tải hiện tại của từng giảng viên
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    var dsGv = ViewData["DanhSachGv"] as IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.GiangVien>
+              ?? Array.Empty<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.GiangVien>();
+    var taiHienTai = ViewData["TaiHienTai"] as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var maPhanCong = ViewData["MaPhanCong"] as int?;
+    var maGvHienTai = ViewData["MaGiangVienHienTai"] as string;
+    string submitAction = ViewData["SubmitAction"] as string ?? "PhanCong";
+    string nhanNut = ViewData["NhanNut"] as string ?? "Xác nhận phân công";
+    bool laThayDoi = maPhanCong != null;
+}
+
+<div class="card mb-3">
+    <div class="card-header bg-light fw-bold">Thông tin cần phân công</div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Sinh viên</dt>
+            <dd class="col-sm-9 fw-bold">@Model.SinhVien?.HoTen (@Model.SinhVien?.MaSinhVien)</dd>
+            <dt class="col-sm-3">Đề tài</dt>
+            <dd class="col-sm-9">@(Model.DeTai?.TenDeTai ?? "-")</dd>
+            <dt class="col-sm-3">Lĩnh vực</dt>
+            <dd class="col-sm-9">@(Model.DeTai?.LinhVuc?.TenLinhVuc ?? "-")</dd>
+        </dl>
+    </div>
+</div>
+
+@if (!dsGv.Any())
+{
+    @* Mục 8.3 và 8.4: không còn giảng viên đúng lĩnh vực và còn dưới giới hạn tải *@
+    <div class="alert alert-warning">
+        Không có giảng viên nào thỏa điều kiện: đúng lĩnh vực <strong>@(Model.DeTai?.LinhVuc?.TenLinhVuc)</strong>,
+        đang công tác và chưa đạt giới hạn hướng dẫn. Vui lòng kiểm tra lại danh sách giảng viên.
+    </div>
+    <a asp-action="ChoPhanCong" class="btn btn-outline-secondary">Quay lại</a>
+}
+else
+{
+    <form asp-action="@submitAction" method="post">
+        <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+        @if (laThayDoi)
+        {
+            <input type="hidden" name="maPhanCong" value="@maPhanCong" />
+        }
+
+        <div class="mb-3">
+            <label for="maGiangVien" class="form-label fw-bold">Giảng viên hướng dẫn <span class="text-danger">*</span></label>
+            <select name="maGiangVien" id="maGiangVien" required class="form-select">
+                <option value="">-- Chọn giảng viên --</option>
+                @foreach (var gv in dsGv)
+                {
+                    var tai = taiHienTai.TryGetValue(gv.MaGiangVien, out var t) ? t : 0;
+                    var chon = gv.MaGiangVien == maGvHienTai;
+                    <option value="@gv.MaGiangVien" selected="@chon">
+                        @gv.HoTen (@gv.MaGiangVien) - tải @tai/@gv.SoSinhVienHuongDanToiDa
+                    </option>
+                }
+            </select>
+            <div class="form-text">
+                Danh sách chỉ gồm giảng viên đúng lĩnh vực của đề tài, đang công tác và chưa đạt giới hạn hướng dẫn.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="ngayBatDau" class="form-label fw-bold">
+                @(laThayDoi ? "Ngày bắt đầu với giảng viên mới" : "Ngày bắt đầu hướng dẫn") <span class="text-danger">*</span>
+            </label>
+            @* Mục 13: dùng đúng kiểu nhập liệu date *@
+            <input type="date" name="ngayBatDau" id="ngayBatDau" required class="form-control"
+                   value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            @if (laThayDoi)
+            {
+                <div class="form-text">Phân công cũ sẽ được đóng lại vào ngày trước ngày này.</div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label for="ghiChu" class="form-label fw-bold">Ghi chú</label>
+            <textarea name="ghiChu" id="ghiChu" rows="3" class="form-control"
+                      placeholder="@(laThayDoi ? "Ví dụ: Giảng viên cũ nghỉ phép dài hạn." : "Ví dụ: Bắt đầu hướng dẫn từ học kỳ này.")"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary px-4">@nhanNut</button>
+        <a asp-action="@(laThayDoi ? "Index" : "ChoPhanCong")" class="btn btn-outline-secondary ms-2">Quay lại</a>
+    </form>
+}

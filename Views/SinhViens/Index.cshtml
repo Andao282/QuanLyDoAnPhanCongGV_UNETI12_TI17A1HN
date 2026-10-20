@@ -1,0 +1,132 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 3 - Danh sách sinh viên kèm tìm kiếm, lọc, sắp xếp, phân trang
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.SinhVien>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Quản lý sinh viên";
+    var tuKhoa = ViewData["TuKhoa"] as string;
+    var trangThai = ViewData["TrangThai"] as string;
+    var sapXep = ViewData["SapXep"] as string;
+    int trangHienTai = (int)ViewData["TrangHienTai"]!;
+    int tongSoTrang = (int)ViewData["TongSoTrang"]!;
+    int tongSoBan = (int)ViewData["TongSoBan"]!;
+    var dsTrangThai = ViewData["DanhSachTrangThai"] as IReadOnlyList<string> ?? Array.Empty<string>();
+}
+
+<div class="container mt-4">
+    <h2>Quản lý sinh viên</h2>
+    <hr />
+
+    @if (TempData["ThongBao"] is string tb && !string.IsNullOrEmpty(tb))
+    {
+        <div class="alert alert-success">@tb</div>
+    }
+
+    @* Form tìm kiếm - lọc - sắp xếp: dùng GET để khi chuyển trang vẫn giữ được điều kiện *@
+    <form method="get" asp-action="Index" class="row g-2 mb-3">
+        <div class="col-md-4">
+            <input type="text" name="tuKhoa" value="@tuKhoa" class="form-control"
+                   placeholder="Tìm theo mã, họ tên, lớp, email" />
+        </div>
+        <div class="col-md-3">
+            <select name="trangThai" class="form-select">
+                <option value="">-- Tất cả trạng thái --</option>
+                @foreach (var tt in dsTrangThai)
+                {
+                    <option value="@tt" selected="@(trangThai == tt)">@TrangThaiHeThong.SinhVien.HienThi(tt)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="sapXep" class="form-select">
+                <option value="" selected="@(sapXep == null)">Sắp xếp: Họ tên A-Z</option>
+                <option value="TenZ" selected="@(sapXep == "TenZ")">Sắp xếp: Họ tên Z-A</option>
+                <option value="MaGiamDan" selected="@(sapXep == "MaGiamDan")">Sắp xếp: Mã tăng dần</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+    </form>
+
+    <p class="text-muted">Tổng số: <strong>@tongSoBan</strong> sinh viên</p>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên</th>
+                <th>Lớp</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Trạng thái</th>
+                <th class="text-center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Không tìm thấy sinh viên phù hợp với điều kiện.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var sv in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@sv.MaSinhVien</td>
+                        <td>@sv.HoTen</td>
+                        <td>@(sv.Lop ?? "-")</td>
+                        <td>@(sv.Email ?? "-")</td>
+                        <td>@(sv.SoDienThoai ?? "-")</td>
+                        <td>
+                            @if (sv.TrangThai == TrangThaiHeThong.SinhVien.HoatDong)
+                            {
+                                <span class="badge bg-success">@TrangThaiHeThong.SinhVien.HienThi(sv.TrangThai)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@TrangThaiHeThong.SinhVien.HienThi(sv.TrangThai)</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-maSinhVien="@sv.MaSinhVien">Chi tiết</a>
+                            <a class="btn btn-sm btn-outline-warning" asp-action="Edit" asp-route-maSinhVien="@sv.MaSinhVien">Sửa</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @* Phân trang: mọi tham số lọc/sắp xếp được truyền lại để giữ điều kiện khi chuyển trang *@
+    @if (tongSoTrang > 1)
+    {
+        var truoc = trangHienTai > 1 ? trangHienTai - 1 : 1;
+        var sau = trangHienTai < tongSoTrang ? trangHienTai + 1 : tongSoTrang;
+
+        <nav aria-label="Phân trang">
+            <ul class="pagination">
+                <li class="page-item @(trangHienTai <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-tuKhoa="@tuKhoa" asp-route-trangThai="@trangThai" asp-route-sapXep="@sapXep"
+                       asp-route-trang="@truoc">Trước</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Trang @trangHienTai / @tongSoTrang</span>
+                </li>
+                <li class="page-item @(trangHienTai >= tongSoTrang ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-tuKhoa="@tuKhoa" asp-route-trangThai="@trangThai" asp-route-sapXep="@sapXep"
+                       asp-route-trang="@sau">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

@@ -1,0 +1,248 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Báo cáo thống kê (mục 8.8)
+*@
+
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Thống kê";
+
+    var theoLinhVuc = ViewData["DeTaiTheoLinhVuc"] as List<ThongKeDeTaiTheoLinhVuc> ?? new List<ThongKeDeTaiTheoLinhVuc>();
+    var theoTrangThai = ViewData["DangKyTheoTrangThai"] as List<ThongKeDangKyTheoTrangThai> ?? new List<ThongKeDangKyTheoTrangThai>();
+    var chiTietDeTai = ViewData["ChiTietDeTai"] as List<ThongKeDeTaiChiTiet> ?? new List<ThongKeDeTaiChiTiet>();
+    var taiGiangVien = ViewData["TaiGiangVien"] as List<ThongKeTaiGiangVien> ?? new List<ThongKeTaiGiangVien>();
+    var gvNhieuNhat = ViewData["GvNhieuNhat"] as ThongKeTaiGiangVien;
+    var theoThang = ViewData["DangKyTheoThang"] as List<ThongKeDangKyTheoThang> ?? new List<ThongKeDangKyTheoThang>();
+    var theoHocKy = ViewData["DeTaiTheoHocKy"] as List<ThongKeDeTaiTheoHocKy> ?? new List<ThongKeDeTaiTheoHocKy>();
+
+    int maxThang = theoThang.Count == 0 ? 0 : theoThang.Max(x => x.SoLuong);
+}
+
+<div class="container mt-4">
+    <h2>Thống kê</h2>
+    <p class="text-muted">Toàn bộ số liệu dưới đây được truy vấn trực tiếp từ Database bằng LINQ tại thời điểm xem trang.</p>
+    <hr />
+
+    <div class="accordion" id="accThongKe">
+
+        @* 1. Số đề tài theo từng lĩnh vực *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#ck1">
+                    Số đề tài theo từng lĩnh vực
+                </button>
+            </h2>
+            <div id="ck1" class="accordion-collapse collapse show" data-bs-parent="#accThongKe">
+                <div class="accordion-body">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead><tr><th>Lĩnh vực</th><th class="text-center">Số đề tài</th></tr></thead>
+                        <tbody>
+                            @foreach (var x in theoLinhVuc)
+                            {
+                                <tr><td>@x.TenLinhVuc</td><td class="text-center fw-bold">@x.SoDeTai</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* 2. Số đăng ký theo từng trạng thái *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ck2">
+                    Số đăng ký theo từng trạng thái
+                </button>
+            </h2>
+            <div id="ck2" class="accordion-collapse collapse" data-bs-parent="#accThongKe">
+                <div class="accordion-body">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead><tr><th>Trạng thái</th><th class="text-center">Số lượng</th></tr></thead>
+                        <tbody>
+                            @foreach (var x in theoTrangThai)
+                            {
+                                <tr>
+                                    <td>@TrangThaiHeThong.DangKyDeTai.HienThi(x.TrangThai)</td>
+                                    <td class="text-center fw-bold">@x.SoLuong</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* 3. Số sinh viên và số chỗ còn của từng đề tài *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ck3">
+                    Số sinh viên đăng ký và số chỗ còn của từng đề tài
+                </button>
+            </h2>
+            <div id="ck3" class="accordion-collapse collapse" data-bs-parent="#accThongKe">
+                <div class="accordion-body p-0">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Tên đề tài</th>
+                                <th>Lĩnh vực</th>
+                                <th class="text-center">Năm / HK</th>
+                                <th class="text-center">Tối đa</th>
+                                <th class="text-center">Đã đăng ký</th>
+                                <th class="text-center">Chỗ còn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var x in chiTietDeTai)
+                            {
+                                <tr>
+                                    <td>@x.MaDeTai</td>
+                                    <td>@x.TenDeTai</td>
+                                    <td>@x.TenLinhVuc</td>
+                                    <td class="text-center">@x.NamHoc / @x.HocKy</td>
+                                    <td class="text-center">@x.SoSinhVienToiDa</td>
+                                    <td class="text-center">@x.SoDangKyHopLe</td>
+                                    <td class="text-center">
+                                        @if (x.SoChoCon > 0)
+                                        {
+                                            <span class="badge bg-success">@x.SoChoCon</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">0</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @* 4. Tải hướng dẫn và tỷ lệ sử dụng khả năng hướng dẫn của từng giảng viên *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ck4">
+                    Tải hướng dẫn và tỷ lệ sử dụng khả năng hướng dẫn của từng giảng viên
+                </button>
+            </h2>
+            <div id="ck4" class="accordion-collapse collapse" data-bs-parent="#accThongKe">
+                <div class="accordion-body p-0">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Mã GV</th>
+                                <th>Họ tên</th>
+                                <th>Lĩnh vực</th>
+                                <th class="text-center">Tải / giới hạn</th>
+                                <th style="width: 30%;">Tỷ lệ sử dụng</th>
+                                <th class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var x in taiGiangVien)
+                            {
+                                <tr>
+                                    <td>@x.MaGiangVien</td>
+                                    <td class="fw-bold">@x.HoTen</td>
+                                    <td>@x.TenLinhVuc</td>
+                                    <td class="text-center">@x.SoDangHuongDanHienTai / @x.SoSinhVienHuongDanToiDa</td>
+                                    <td>
+                                        <div class="progress" style="height: 14px;">
+                                            <div class="progress-bar @(x.TyLeSuDung >= 100 ? "bg-danger" : "bg-success")"
+                                                 style="width: @Math.Min(x.TyLeSuDung, 100)%"></div>
+                                        </div>
+                                        <span class="small text-muted">@x.TyLeSuDung%</span>
+                                    </td>
+                                    <td class="text-center">@TrangThaiHeThong.GiangVien.HienThi(x.TrangThai)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @* Giảng viên có số sinh viên hướng dẫn nhiều nhất *@
+                    @if (gvNhieuNhat != null && gvNhieuNhat.SoDangHuongDanHienTai > 0)
+                    {
+                        <div class="alert alert-info mb-0 mt-3">
+                            Giảng viên đang hướng dẫn nhiều sinh viên nhất:
+                            <strong>@gvNhieuNhat.HoTen</strong> với
+                            <strong>@gvNhieuNhat.SoDangHuongDanHienTai</strong> sinh viên
+                            (tỷ lệ sử dụng @gvNhieuNhat.TyLeSuDung%).
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* 5. Số đăng ký theo từng tháng *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ck5">
+                    Số đăng ký theo từng tháng
+                </button>
+            </h2>
+            <div id="ck5" class="accordion-collapse collapse" data-bs-parent="#accThongKe">
+                <div class="accordion-body">
+                    @if (theoThang.Count == 0)
+                    {
+                        <p class="text-muted mb-0">Chưa có dữ liệu đăng ký.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-sm table-bordered">
+                            <thead><tr><th>Tháng</th><th class="text-center">Số đăng ký</th><th style="width: 45%;">Biểu đồ</th></tr></thead>
+                            <tbody>
+                                @foreach (var x in theoThang)
+                                {
+                                    var pct = maxThang == 0 ? 0 : Math.Round(x.SoLuong * 100.0 / maxThang, 1);
+                                    <tr>
+                                        <td>@x.TenThang</td>
+                                        <td class="text-center fw-bold">@x.SoLuong</td>
+                                        <td>
+                                            <div class="progress" style="height: 12px;">
+                                                <div class="progress-bar bg-info" style="width: @pct%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* 6. Số đề tài theo năm học / học kỳ *@
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#ck6">
+                    Số đề tài theo năm học và học kỳ
+                </button>
+            </h2>
+            <div id="ck6" class="accordion-collapse collapse" data-bs-parent="#accThongKe">
+                <div class="accordion-body">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead><tr><th>Năm học</th><th class="text-center">Học kỳ</th><th class="text-center">Số đề tài</th></tr></thead>
+                        <tbody>
+                            @foreach (var x in theoHocKy)
+                            {
+                                <tr>
+                                    <td>@x.NamHoc</td>
+                                    <td class="text-center">@x.HocKy</td>
+                                    <td class="text-center fw-bold">@x.SoDeTai</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary mt-3">Quay lại Dashboard</a>
+</div>

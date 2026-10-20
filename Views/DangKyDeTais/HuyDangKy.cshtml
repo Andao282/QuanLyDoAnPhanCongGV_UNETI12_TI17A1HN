@@ -1,0 +1,47 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 3 - Xác nhận hủy đăng ký đề tài (mục 7.4)
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Hủy đăng ký";
+}
+
+<div class="container mt-4">
+    <h2>Xác nhận hủy đăng ký</h2>
+    <hr />
+
+    <div class="alert alert-warning">
+        <strong>Bạn có chắc muốn hủy đăng ký đề tài này không?</strong>
+        <div class="mt-1">Đăng ký sẽ chuyển sang trạng thái <em>@TrangThaiHeThong.DangKyDeTai.HienThi(TrangThaiHeThong.DangKyDeTai.DaHuy)</em>.</div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Mã đăng ký</dt>
+                <dd class="col-sm-9">@Model.MaDangKy</dd>
+
+                <dt class="col-sm-3">Tên đề tài</dt>
+                <dd class="col-sm-9 fw-bold">@(Model.DeTai?.TenDeTai ?? "-")</dd>
+
+                <dt class="col-sm-3">Ngày đăng ký</dt>
+                <dd class="col-sm-9">@Model.NgayDangKy.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Trạng thái hiện tại</dt>
+                <dd class="col-sm-9 fw-bold">@TrangThaiHeThong.DangKyDeTai.HienThi(Model.TrangThai)</dd>
+            </dl>
+        </div>
+    </div>
+
+    @* Mục 7.4: chỉ hủy được khi còn Chờ duyệt, controller kiểm tra lại trước khi lưu *@
+    <form asp-action="HuyDangKy" method="post">
+        <input type="hidden" name="maDangKy" value="@Model.MaDangKy" />
+        <button type="submit" class="btn btn-danger px-4">Xác nhận hủy đăng ký</button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">Không, giữ lại</a>
+    </form>
+</div>

@@ -1,0 +1,53 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Giao diện Form Sinh viên đăng ký đề tài
+*@
+
+@model QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai
+
+@{
+    ViewData["Title"] = "Đăng ký đề tài đồ án";
+}
+
+<div class="container mt-4">
+    <h2>Gửi yêu cầu đăng ký đề tài</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                @* Vùng này sẽ hiển thị các lỗi hệ thống chung (như sinh viên đã có đề tài) *@
+                <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MaDeTai" class="control-label fw-bold">Chọn Đề Tài <span class="text-danger">*</span></label>
+                    <select asp-for="MaDeTai" class="form-control" asp-items="ViewBag.MaDeTai">
+                        <option value="">-- Vui lòng chọn một đề tài --</option>
+                    </select>
+                    @* Lỗi cụ thể của đề tài (hết chỗ, spam) sẽ hiện ở đây *@
+                    <span asp-validation-for="MaDeTai" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="LyDoDangKy" class="control-label fw-bold">Lý do/Mong muốn đăng ký</label>
+                    <textarea asp-for="LyDoDangKy" class="form-control" rows="4" placeholder="Ví dụ: Em rất thích tìm hiểu về mảng này..."></textarea>
+                    <span asp-validation-for="LyDoDangKy" class="text-danger"></span>
+                </div>
+
+                @* Các trường Mã Sinh Viên, Ngày Đăng Ký, Trạng Thái đã được xử lý ngầm trong Controller nên không cần vẽ ra HTML *@
+
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Gửi Yêu Cầu Đăng Ký</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

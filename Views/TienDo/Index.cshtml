@@ -1,0 +1,112 @@
+@*
+Họ và tên: Đào Hoàng An
+Mã sinh viên: [23103100074]
+Nội dung thực hiện: Module 4 - Theo dõi tiến độ thực hiện đề tài (mục 8.6)
+*@
+
+@model IEnumerable<QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Models.DangKyDeTai>
+@using QuanLyDoAnPhanCongGV_UNETI12_TI17A1HN.Common
+
+@{
+    ViewData["Title"] = "Theo dõi tiến độ";
+    var tuKhoa = ViewData["TuKhoa"] as string;
+    var trangThai = ViewData["TrangThai"] as string;
+    var thieuGv = ViewData["ThieuGv"] as bool?;
+    var gvHienTai = ViewData["GvHienTai"] as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<div class="container mt-4">
+    <h2>Theo dõi tiến độ thực hiện đề tài</h2>
+    <hr />
+
+    @if (TempData["ThongBao"] is string tb && !string.IsNullOrEmpty(tb))
+    {
+        <div class="alert alert-success">@tb</div>
+    }
+    @if (TempData["Loi"] is string loi && !string.IsNullOrEmpty(loi))
+    {
+        <div class="alert alert-danger">@loi</div>
+    }
+
+    <form method="get" asp-action="Index" class="row g-2 mb-3">
+        <div class="col-md-4">
+            <input type="text" name="tuKhoa" value="@tuKhoa" class="form-control" placeholder="Tìm theo tên SV, mã SV, tên đề tài" />
+        </div>
+        <div class="col-md-3">
+            <select name="trangThai" class="form-select">
+                <option value="">-- Tất cả trạng thái --</option>
+                @foreach (var tt in TrangThaiHeThong.TrangThaiThucHien.TatCa)
+                {
+                    <option value="@tt" selected="@(trangThai == tt)">@TrangThaiHeThong.TrangThaiThucHien.HienThi(tt)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="thieuGv" class="form-select">
+                <option value="">Tất cả</option>
+                <option value="true" selected="@(thieuGv == true)">Chỉ hiện đăng ký chưa có GVHD</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">Lọc</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên sinh viên</th>
+                <th>Đề tài</th>
+                <th>GVHD hiện tại</th>
+                <th class="text-center">Ngày đăng ký</th>
+                <th class="text-center" style="width: 260px;">Trạng thái thực hiện</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Không có dữ liệu phù hợp.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    var coGv = gvHienTai.ContainsKey(item.MaDangKy);
+                    <tr>
+                        <td class="fw-bold">@item.SinhVien?.MaSinhVien</td>
+                        <td>@item.SinhVien?.HoTen</td>
+                        <td>@(item.DeTai?.TenDeTai ?? "-")</td>
+                        <td>
+                            @if (coGv)
+                            {
+                                <span class="text-success">@gvHienTai[item.MaDangKy]</span>
+                            }
+                            else
+                            {
+                                @* Đã duyệt nhưng chưa có GVHD thì cần phân công lại (mục 8.5) *@
+                                <span class="badge bg-danger">Chưa có GVHD</span>
+                            }
+                        </td>
+                        <td class="text-center">@item.NgayDangKy.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @* Mỗi dòng là một form riêng để cập nhật nhanh không cần mở trang chi tiết *@
+                            <form asp-action="CapNhat" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="maDangKy" value="@item.MaDangKy" />
+                                <select name="trangThaiThucHien" class="form-select form-select-sm">
+                                    @foreach (var tt in TrangThaiHeThong.TrangThaiThucHien.TatCa)
+                                    {
+                                        <option value="@tt" selected="@(item.TrangThaiThucHien == tt)">@TrangThaiHeThong.TrangThaiThucHien.HienThi(tt)</option>
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary flex-shrink-0">Lưu</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
